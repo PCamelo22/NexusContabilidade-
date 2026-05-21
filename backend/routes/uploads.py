@@ -102,15 +102,25 @@ async def upload_excel(
         df.columns = [str(c).strip() for c in df.columns]
 
         col_data      = encontrar_coluna(df, "data", "date", "dt")
-        col_desc      = encontrar_coluna(df, "descri", "historic", "memo", "detalhe")
-        col_valor     = encontrar_coluna(df, "valor", "value", "amount", "quantia")
+        col_desc      = encontrar_coluna(df, "descri", "historic", "memo", "detalhe", "produto", "item", "nome", "servico", "serviço")
+        col_valor     = encontrar_coluna(df, "valor", "value", "amount", "quantia", "receita", "despesa", "total", "preco", "preço", "venda")
         col_tipo      = encontrar_coluna(df, "tipo", "type", "natureza")
         col_categoria = encontrar_coluna(df, "categor", "classif")
 
+        # Detecta tipo pelo nome da coluna de valor (ex: "Receita (R$)" → receita)
+        tipo_fixo = None
+        if col_valor:
+            nome_col = col_valor.lower()
+            if "receita" in nome_col or "entrada" in nome_col or "venda" in nome_col:
+                tipo_fixo = "receita"
+            elif "despesa" in nome_col or "saida" in nome_col or "saída" in nome_col or "custo" in nome_col:
+                tipo_fixo = "despesa"
+
         if not col_data or not col_valor:
+            colunas_disponiveis = ", ".join(df.columns.tolist())
             raise HTTPException(
                 status_code=400,
-                detail="Não foi possível identificar as colunas de data e valor. Verifique o arquivo."
+                detail=f"Não foi possível identificar as colunas de data e valor. Colunas encontradas: {colunas_disponiveis}"
             )
 
         lancamentos = []
@@ -123,13 +133,16 @@ async def upload_excel(
                 if valor == 0:
                     continue
 
-                tipo = "receita"
-                if col_tipo:
+                if tipo_fixo:
+                    tipo = tipo_fixo
+                elif col_tipo:
                     tipo_raw = str(row[col_tipo]).lower()
                     if any(p in tipo_raw for p in ["debit", "saida", "saída", "despesa", "d"]):
                         tipo = "despesa"
                     elif any(p in tipo_raw for p in ["credit", "entrada", "receita", "c"]):
                         tipo = "receita"
+                    else:
+                        tipo = detectar_tipo(row[col_valor])
                 else:
                     tipo = detectar_tipo(row[col_valor])
 
