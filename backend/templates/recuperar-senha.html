@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ElaConta — Recuperar Senha</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #6B21A8; --pink: #EC1E8C;
+      --bg: #F5F3FF; --white: #FFFFFF;
+      --border: #EDE9FE; --text: #1E1B4B;
+      --muted: #6B7280; --danger: #EF4444;
+      --verde: #10B981; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    body {
+      font-family: var(--font); background: var(--bg);
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .wrap { width: 100%; max-width: 400px; }
+
+    .logo-area { text-align: center; margin-bottom: 28px; }
+    .logo-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 56px; height: 56px; border-radius: 16px;
+      background: linear-gradient(135deg, #6B21A8, #EC1E8C); margin-bottom: 10px;
+    }
+    .logo-icon svg { width: 28px; height: 28px; }
+    .logo-name {
+      font-size: 24px; font-weight: 700;
+      background: linear-gradient(135deg, #6B21A8, #EC1E8C);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .logo-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    .card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px;
+    }
+
+    .steps {
+      display: flex; justify-content: center; gap: 8px;
+      margin-bottom: 24px;
+    }
+    .step {
+      width: 28px; height: 4px; border-radius: 2px;
+      background: var(--border); transition: background 0.3s;
+    }
+    .step.active { background: linear-gradient(90deg, #6B21A8, #EC1E8C); }
+
+    .tela { display: none; }
+    .tela.active { display: block; }
+
+    .tela-titulo { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .tela-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .field input {
+      width: 100%; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid var(--border); font-size: 14px;
+      font-family: var(--font); color: var(--text);
+      background: var(--bg); outline: none; transition: border-color 0.15s;
+    }
+    .field input:focus { border-color: var(--purple); }
+
+    .codigo-grid {
+      display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;
+    }
+    .codigo-grid input {
+      width: 44px; height: 52px;
+      text-align: center; font-size: 22px; font-weight: 700;
+      border-radius: 8px; border: 1px solid var(--border);
+      background: var(--bg); outline: none; color: var(--text);
+      font-family: var(--font); transition: border-color 0.15s;
+    }
+    .codigo-grid input:focus { border-color: var(--purple); }
+
+    .btn {
+      width: 100%; padding: 12px; border-radius: 10px; border: none;
+      background: linear-gradient(135deg, #6B21A8, #EC1E8C);
+      color: #fff; font-size: 14px; font-weight: 600;
+      font-family: var(--font); cursor: pointer; transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .msg {
+      font-size: 13px; padding: 10px 12px; border-radius: 8px;
+      margin-bottom: 14px; display: none;
+    }
+    .msg-erro  { background: #FEF2F2; border: 1px solid #FECACA; color: var(--danger); }
+    .msg-ok    { background: #ECFDF5; border: 1px solid #A7F3D0; color: #065F46; }
+
+    .footer-link {
+      text-align: center; margin-top: 16px;
+      font-size: 13px; color: var(--muted);
+    }
+    .footer-link a { color: var(--purple); font-weight: 600; text-decoration: none; }
+
+    .reenviar {
+      text-align: center; margin-top: 12px;
+      font-size: 12px; color: var(--muted);
+    }
+    .reenviar button {
+      background: none; border: none; color: var(--purple);
+      font-weight: 600; cursor: pointer; font-size: 12px;
+      font-family: var(--font);
+    }
+
+    .sucesso-icon {
+      text-align: center; font-size: 56px;
+      margin-bottom: 16px;
+    }
+    .sucesso-titulo {
+      font-size: 18px; font-weight: 700; color: var(--text);
+      text-align: center; margin-bottom: 8px;
+    }
+    .sucesso-sub {
+      font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="logo-area">
+    <div class="logo-icon">
+      <svg viewBox="0 0 28 28" fill="none">
+        <path d="M14 4L4 22h20L14 4z" fill="white" opacity="0.9"/>
+        <circle cx="14" cy="20" r="2.5" fill="white" opacity="0.6"/>
+      </svg>
+    </div>
+    <div class="logo-name">ElaConta</div>
+    <div class="logo-sub">Recuperação de senha</div>
+  </div>
+
+  <div class="card">
+
+    <div class="steps">
+      <div class="step active" id="step-1"></div>
+      <div class="step" id="step-2"></div>
+      <div class="step" id="step-3"></div>
+    </div>
+
+    <!-- Tela 1: E-mail -->
+    <div class="tela active" id="tela-1">
+      <div class="tela-titulo">Qual é o seu e-mail?</div>
+      <div class="tela-sub">Enviaremos um código de verificação para você redefinir a senha.</div>
+      <div id="msg-1" class="msg"></div>
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com"
+          onkeydown="if(event.key==='Enter') enviarCodigo()" />
+      </div>
+      <button class="btn" id="btn-1" onclick="enviarCodigo()">Enviar código</button>
+      <div class="footer-link">Lembrou a senha? <a href="/login">Voltar ao login</a></div>
+    </div>
+
+    <!-- Tela 2: Código + nova senha -->
+    <div class="tela" id="tela-2">
+      <div class="tela-titulo">Insira o código</div>
+      <div class="tela-sub" id="tela-2-sub">Código enviado para seu e-mail.</div>
+      <div id="msg-2" class="msg"></div>
+
+      <div class="codigo-grid">
+        <input type="text" maxlength="1" id="c0" oninput="avancaCodigo(0)" onkeydown="voltaCodigo(event,0)" />
+        <input type="text" maxlength="1" id="c1" oninput="avancaCodigo(1)" onkeydown="voltaCodigo(event,1)" />
+        <input type="text" maxlength="1" id="c2" oninput="avancaCodigo(2)" onkeydown="voltaCodigo(event,2)" />
+        <input type="text" maxlength="1" id="c3" oninput="avancaCodigo(3)" onkeydown="voltaCodigo(event,3)" />
+        <input type="text" maxlength="1" id="c4" oninput="avancaCodigo(4)" onkeydown="voltaCodigo(event,4)" />
+        <input type="text" maxlength="1" id="c5" oninput="avancaCodigo(5)" onkeydown="voltaCodigo(event,5)" />
+      </div>
+
+      <div class="field">
+        <label>Nova senha</label>
+        <input type="password" id="nova-senha" placeholder="Mínimo 6 caracteres" />
+      </div>
+      <div class="field">
+        <label>Confirmar nova senha</label>
+        <input type="password" id="confirmar-senha" placeholder="Repita a nova senha"
+          onkeydown="if(event.key==='Enter') redefinirSenha()" />
+      </div>
+      <button class="btn" id="btn-2" onclick="redefinirSenha()">Redefinir senha</button>
+      <div class="reenviar">
+        Não recebeu? <button onclick="reenviarCodigo()">Reenviar código</button>
+      </div>
+    </div>
+
+    <!-- Tela 3: Sucesso -->
+    <div class="tela" id="tela-3">
+      <div class="sucesso-icon">✅</div>
+      <div class="sucesso-titulo">Senha redefinida!</div>
+      <div class="sucesso-sub">Sua senha foi alterada com sucesso. Faça login com sua nova senha.</div>
+      <button class="btn" onclick="window.location.href='/login'">Ir para o login</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let emailRecuperacao = ''
+
+  function setStep(n) {
+    document.querySelectorAll('.step').forEach((s,i) => {
+      s.classList.toggle('active', i < n)
+    })
+  }
+
+  function showTela(n) {
+    document.querySelectorAll('.tela').forEach(t => t.classList.remove('active'))
+    document.getElementById('tela-' + n).classList.add('active')
+    setStep(n)
+  }
+
+  function showMsg(id, texto, tipo) {
+    const el = document.getElementById(id)
+    el.textContent  = texto
+    el.className    = 'msg msg-' + tipo
+    el.style.display = 'block'
+  }
+
+  function hideMsg(id) {
+    document.getElementById(id).style.display = 'none'
+  }
+
+  // ── Tela 1 ──
+  async function enviarCodigo() {
+    const email = document.getElementById('email').value.trim()
+    if (!email) return
+
+    const btn = document.getElementById('btn-1')
+    btn.disabled = true
+    btn.textContent = 'Enviando...'
+    hideMsg('msg-1')
+
+    try {
+      await fetch('/auth/recuperar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      emailRecuperacao = email
+      document.getElementById('tela-2-sub').textContent = `Código enviado para ${email}.`
+      showTela(2)
+      document.getElementById('c0').focus()
+    } catch {
+      showMsg('msg-1', 'Erro ao enviar. Tente novamente.', 'erro')
+    } finally {
+      btn.disabled = false
+      btn.textContent = 'Enviar código'
+    }
+  }
+
+  // ── Inputs do código ──
+  function avancaCodigo(i) {
+    const val = document.getElementById('c' + i).value
+    if (val && i < 5) document.getElementById('c' + (i+1)).focus()
+  }
+
+  function voltaCodigo(e, i) {
+    if (e.key === 'Backspace' && !document.getElementById('c' + i).value && i > 0) {
+      document.getElementById('c' + (i-1)).focus()
+    }
+  }
+
+  function getCodigo() {
+    return [0,1,2,3,4,5].map(i => document.getElementById('c' + i).value).join('')
+  }
+
+  // ── Tela 2 ──
+  async function redefinirSenha() {
+    const codigo       = getCodigo()
+    const nova_senha   = document.getElementById('nova-senha').value
+    const confirmar    = document.getElementById('confirmar-senha').value
+
+    if (codigo.length !== 6) { showMsg('msg-2', 'Preencha o código de 6 dígitos.', 'erro'); return }
+    if (!nova_senha)          { showMsg('msg-2', 'Preencha a nova senha.', 'erro'); return }
+    if (nova_senha.length < 6){ showMsg('msg-2', 'A senha deve ter pelo menos 6 caracteres.', 'erro'); return }
+    if (nova_senha !== confirmar) { showMsg('msg-2', 'As senhas não coincidem.', 'erro'); return }
+
+    const btn = document.getElementById('btn-2')
+    btn.disabled = true
+    btn.textContent = 'Redefinindo...'
+    hideMsg('msg-2')
+
+    try {
+      const res  = await fetch('/auth/redefinir', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailRecuperacao, codigo, nova_senha }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        showTela(3)
+      } else {
+        showMsg('msg-2', data.detail || 'Erro ao redefinir senha.', 'erro')
+      }
+    } catch {
+      showMsg('msg-2', 'Erro de conexão. Tente novamente.', 'erro')
+    } finally {
+      btn.disabled = false
+      btn.textContent = 'Redefinir senha'
+    }
+  }
+
+  async function reenviarCodigo() {
+    if (!emailRecuperacao) return
+    await fetch('/auth/recuperar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: emailRecuperacao }),
+    })
+    showMsg('msg-2', 'Código reenviado!', 'ok')
+    ;[0,1,2,3,4,5].forEach(i => { document.getElementById('c' + i).value = '' })
+    document.getElementById('c0').focus()
+  }
+</script>
+</body>
+</html>

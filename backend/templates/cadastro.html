@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ElaConta — Cadastro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #6B21A8;
+      --pink: #EC1E8C;
+      --bg: #F5F3FF;
+      --white: #FFFFFF;
+      --border: #EDE9FE;
+      --text: #1E1B4B;
+      --muted: #6B7280;
+      --verde: #10B981;
+      --danger: #EF4444;
+      --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .wrap { width: 100%; max-width: 420px; }
+
+    .logo-area { text-align: center; margin-bottom: 28px; }
+    .logo-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 56px; height: 56px; border-radius: 16px;
+      background: linear-gradient(135deg, #6B21A8, #EC1E8C);
+      margin-bottom: 10px;
+    }
+    .logo-icon svg { width: 28px; height: 28px; }
+    .logo-name {
+      font-size: 24px; font-weight: 700;
+      background: linear-gradient(135deg, #6B21A8, #EC1E8C);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .logo-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    .card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px;
+    }
+    .card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .card-sub   { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .field input {
+      width: 100%; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid var(--border); font-size: 14px;
+      font-family: var(--font); color: var(--text);
+      background: var(--bg); outline: none; transition: border-color 0.15s;
+    }
+    .field input:focus { border-color: var(--purple); }
+
+    .btn {
+      width: 100%; padding: 12px; border-radius: 10px; border: none;
+      font-size: 14px; font-weight: 600; font-family: var(--font);
+      cursor: pointer; transition: opacity 0.15s; margin-top: 6px;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-primary { background: linear-gradient(135deg, #6B21A8, #EC1E8C); color: #fff; }
+    .btn-outline {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text); margin-top: 8px;
+    }
+
+    .alerta {
+      padding: 12px 16px; border-radius: 8px;
+      font-size: 13px; margin-bottom: 16px; display: none;
+    }
+    .alerta-verde { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
+    .alerta-red   { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
+
+    /* Código */
+    .codigo-wrap {
+      display: flex; gap: 8px; justify-content: center;
+      margin: 20px 0;
+    }
+    .codigo-input {
+      width: 44px; height: 52px; border-radius: 10px;
+      border: 2px solid var(--border); font-size: 22px;
+      font-weight: 700; text-align: center; font-family: var(--font);
+      color: var(--purple); background: var(--bg); outline: none;
+      transition: border-color 0.15s;
+    }
+    .codigo-input:focus { border-color: var(--purple); }
+
+    .reenviar {
+      text-align: center; font-size: 12px; color: var(--muted);
+      margin-top: 12px;
+    }
+    .reenviar a { color: var(--purple); cursor: pointer; font-weight: 600; }
+
+    .footer-link {
+      text-align: center; margin-top: 20px;
+      font-size: 13px; color: var(--muted);
+    }
+    .footer-link a { color: var(--purple); font-weight: 600; text-decoration: none; }
+
+    /* Steps */
+    .steps {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-bottom: 24px;
+    }
+    .step {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      border: 2px solid var(--border); color: var(--muted);
+      transition: all 0.2s;
+    }
+    .step.active {
+      background: linear-gradient(135deg, #6B21A8, #EC1E8C);
+      border-color: transparent; color: #fff;
+    }
+    .step.done {
+      background: var(--verde); border-color: transparent; color: #fff;
+    }
+    .step-line {
+      flex: 1; max-width: 40px; height: 2px;
+      background: var(--border); border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Logo -->
+  <div class="logo-area">
+    <div class="logo-icon">
+      <svg viewBox="0 0 28 28" fill="none">
+        <path d="M14 4L4 22h20L14 4z" fill="white" opacity="0.9"/>
+        <circle cx="14" cy="20" r="2.5" fill="white" opacity="0.6"/>
+      </svg>
+    </div>
+    <div class="logo-name">ElaConta</div>
+    <div class="logo-sub">Cadastro de contadora</div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps">
+    <div class="step active" id="step-1">1</div>
+    <div class="step-line"></div>
+    <div class="step" id="step-2">2</div>
+    <div class="step-line"></div>
+    <div class="step" id="step-3">✓</div>
+  </div>
+
+  <!-- Tela 1: Dados -->
+  <div class="card" id="tela-dados">
+    <div class="card-title">Criar conta</div>
+    <div class="card-sub">Preencha seus dados para começar</div>
+
+    <div id="alerta-dados" class="alerta"></div>
+
+    <div class="field">
+      <label>Nome completo</label>
+      <input type="text" id="nome" placeholder="Ana Paula Silva" />
+    </div>
+    <div class="field">
+      <label>E-mail</label>
+      <input type="email" id="email" placeholder="contadora@email.com" />
+    </div>
+    <div class="field">
+      <label>Senha</label>
+      <input type="password" id="senha" placeholder="Mínimo 6 caracteres" />
+    </div>
+    <div class="field">
+      <label>Confirmar senha</label>
+      <input type="password" id="senha2" placeholder="Repita a senha" />
+    </div>
+
+    <button class="btn btn-primary" id="btn-enviar" onclick="enviarCodigo()">
+      Enviar código de confirmação
+    </button>
+
+    <div class="footer-link">
+      Já tem conta? <a href="/login">Entrar</a>
+    </div>
+  </div>
+
+  <!-- Tela 2: Código -->
+  <div class="card" id="tela-codigo" style="display:none">
+    <div class="card-title">Confirme seu e-mail</div>
+    <div class="card-sub" id="codigo-sub">Digite o código de 6 dígitos enviado para o seu e-mail.</div>
+
+    <div id="alerta-codigo" class="alerta"></div>
+
+    <div class="codigo-wrap">
+      <input class="codigo-input" type="text" maxlength="1" id="c0" oninput="avancarCodigo(0)" />
+      <input class="codigo-input" type="text" maxlength="1" id="c1" oninput="avancarCodigo(1)" />
+      <input class="codigo-input" type="text" maxlength="1" id="c2" oninput="avancarCodigo(2)" />
+      <input class="codigo-input" type="text" maxlength="1" id="c3" oninput="avancarCodigo(3)" />
+      <input class="codigo-input" type="text" maxlength="1" id="c4" oninput="avancarCodigo(4)" />
+      <input class="codigo-input" type="text" maxlength="1" id="c5" oninput="avancarCodigo(5)" />
+    </div>
+
+    <button class="btn btn-primary" id="btn-confirmar" onclick="confirmarCodigo()">
+      Confirmar código
+    </button>
+    <button class="btn btn-outline" onclick="voltarDados()">
+      ← Voltar
+    </button>
+
+    <div class="reenviar">
+      Não recebeu? <a onclick="reenviarCodigo()">Reenviar código</a>
+    </div>
+  </div>
+
+  <!-- Tela 3: Sucesso -->
+  <div class="card" id="tela-sucesso" style="display:none;text-align:center">
+    <div style="font-size:56px;margin-bottom:16px">🎉</div>
+    <div class="card-title" style="justify-content:center">Cadastro realizado!</div>
+    <div class="card-sub" style="margin-bottom:24px">
+      Sua conta foi criada com sucesso. Faça login para começar.
+    </div>
+    <button class="btn btn-primary" onclick="window.location.href='/login'">
+      Ir para o login
+    </button>
+  </div>
+
+</div>
+
+<script>
+  let emailCadastro = ''
+
+  // ── Tela 1 → Enviar código ──
+  async function enviarCodigo() {
+    const nome  = document.getElementById('nome').value.trim()
+    const email = document.getElementById('email').value.trim()
+    const senha = document.getElementById('senha').value
+    const senha2= document.getElementById('senha2').value
+
+    if (!nome || !email || !senha) {
+      mostrarAlerta('alerta-dados', 'Preencha todos os campos.', 'red'); return
+    }
+    if (senha.length < 6) {
+      mostrarAlerta('alerta-dados', 'A senha deve ter pelo menos 6 caracteres.', 'red'); return
+    }
+    if (senha !== senha2) {
+      mostrarAlerta('alerta-dados', 'As senhas não coincidem.', 'red'); return
+    }
+
+    const btn = document.getElementById('btn-enviar')
+    btn.disabled    = true
+    btn.textContent = 'Enviando...'
+
+    try {
+      const res = await fetch('/cadastro/solicitar', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ nome, email, senha }),
+      })
+      const data = await res.json()
+
+      if (!res.ok) {
+        mostrarAlerta('alerta-dados', data.detail || 'Erro ao enviar código.', 'red')
+        return
+      }
+
+      emailCadastro = email
+      document.getElementById('codigo-sub').textContent =
+        `Digite o código de 6 dígitos enviado para ${email}.`
+
+      // Avança para tela 2
+      document.getElementById('tela-dados').style.display   = 'none'
+      document.getElementById('tela-codigo').style.display  = 'block'
+      document.getElementById('step-1').className = 'step done'
+      document.getElementById('step-2').className = 'step active'
+      document.getElementById('c0').focus()
+
+    } catch {
+      mostrarAlerta('alerta-dados', 'Erro de conexão.', 'red')
+    } finally {
+      btn.disabled    = false
+      btn.textContent = 'Enviar código de confirmação'
+    }
+  }
+
+  // ── Navegar entre inputs do código ──
+  function avancarCodigo(idx) {
+    const val = document.getElementById(`c${idx}`).value
+    if (val && idx < 5) {
+      document.getElementById(`c${idx+1}`).focus()
+    }
+    // Auto-confirma se todos preenchidos
+    const codigo = Array.from({length:6}, (_,i) => document.getElementById(`c${i}`).value).join('')
+    if (codigo.length === 6) confirmarCodigo()
+  }
+
+  // ── Tela 2 → Confirmar código ──
+  async function confirmarCodigo() {
+    const codigo = Array.from({length:6}, (_,i) =>
+      document.getElementById(`c${i}`).value
+    ).join('')
+
+    if (codigo.length !== 6) {
+      mostrarAlerta('alerta-codigo', 'Digite o código completo.', 'red'); return
+    }
+
+    const btn = document.getElementById('btn-confirmar')
+    btn.disabled    = true
+    btn.textContent = 'Verificando...'
+
+    try {
+      const res = await fetch('/cadastro/confirmar', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email: emailCadastro, codigo }),
+      })
+      const data = await res.json()
+
+      if (!res.ok) {
+        mostrarAlerta('alerta-codigo', data.detail || 'Código incorreto.', 'red')
+        // Limpa os campos
+        Array.from({length:6}, (_,i) => { document.getElementById(`c${i}`).value = '' })
+        document.getElementById('c0').focus()
+        return
+      }
+
+      // Sucesso
+      document.getElementById('tela-codigo').style.display  = 'none'
+      document.getElementById('tela-sucesso').style.display = 'block'
+      document.getElementById('step-2').className = 'step done'
+      document.getElementById('step-3').className = 'step done'
+
+    } catch {
+      mostrarAlerta('alerta-codigo', 'Erro de conexão.', 'red')
+    } finally {
+      btn.disabled    = false
+      btn.textContent = 'Confirmar código'
+    }
+  }
+
+  // ── Reenviar código ──
+  async function reenviarCodigo() {
+    try {
+      const res = await fetch(`/cadastro/reenviar?email=${encodeURIComponent(emailCadastro)}`, {
+        method: 'POST'
+      })
+      const data = await res.json()
+      if (res.ok) {
+        mostrarAlerta('alerta-codigo', '✅ Código reenviado!', 'verde')
+      } else {
+        mostrarAlerta('alerta-codigo', data.detail || 'Erro ao reenviar.', 'red')
+      }
+    } catch {
+      mostrarAlerta('alerta-codigo', 'Erro de conexão.', 'red')
+    }
+  }
+
+  // ── Voltar ──
+  function voltarDados() {
+    document.getElementById('tela-codigo').style.display = 'none'
+    document.getElementById('tela-dados').style.display  = 'block'
+    document.getElementById('step-1').className = 'step active'
+    document.getElementById('step-2').className = 'step'
+  }
+
+  // ── Helpers ──
+  function mostrarAlerta(id, msg, tipo) {
+    const el = document.getElementById(id)
+    el.textContent   = msg
+    el.className     = `alerta alerta-${tipo}`
+    el.style.display = 'block'
+    setTimeout(() => { el.style.display = 'none' }, 5000)
+  }
+</script>
+</body>
+</html>
