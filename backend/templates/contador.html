@@ -873,7 +873,7 @@
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
     document.getElementById('page-' + pagina).classList.add('active')
-    el.classList.add('active')
+    if (el) el.classList.add('active')
     if (pagina === 'contas-pagar') {
       preencherFiltroEmpresas()
       carregarContasPagar()
@@ -882,6 +882,7 @@
       const empresaId = document.getElementById('lanc-empresa').value
       if (empresaId) carregarLancamentosRecentes(empresaId)
     }
+    mobSyncCont(pagina)
   }
 
   // ── Clientes ──

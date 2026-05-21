@@ -529,10 +529,11 @@
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
     document.getElementById('page-' + pagina).classList.add('active')
-    el.classList.add('active')
+    if (el) el.classList.add('active')
     if (pagina === 'lancamentos') carregarLancamentos()
     if (pagina === 'contas')      carregarContas()
     if (pagina === 'dre')         carregarDRE()
+    mobSync(pagina)
   }
 
   // ── Dashboard ──
@@ -1081,13 +1082,6 @@
     document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'))
     const btn = document.getElementById('mob-' + pagina)
     if (btn) btn.classList.add('active')
-  }
-
-  // Sobrescreve navegar para também sincronizar menu mobile
-  const _navegarOriginal = navegar
-  function navegar(pagina, el) {
-    _navegarOriginal(pagina, el)
-    mobSync(pagina)
   }
 
   // Sincroniza badge de contas no menu mobile
