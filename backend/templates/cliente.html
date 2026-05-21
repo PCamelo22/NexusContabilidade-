@@ -772,6 +772,17 @@
     }
 
     painel.innerHTML = cards.join('')
+
+    // Espelha badge no menu mobile
+    const mobBadge = document.getElementById('mob-badge-contas')
+    if (mobBadge) {
+      if (totalAlerta > 0) {
+        mobBadge.textContent   = totalAlerta
+        mobBadge.style.display = 'flex'
+      } else {
+        mobBadge.style.display = 'none'
+      }
+    }
   }
 
   async function carregarContas() {
@@ -1084,19 +1095,6 @@
     if (btn) btn.classList.add('active')
   }
 
-  // Sincroniza badge de contas no menu mobile
-  const _exibirNotOriginal = exibirNotificacoes
-  function exibirNotificacoes(data) {
-    _exibirNotOriginal(data)
-    // replica badge no menu mobile
-    const badge    = document.getElementById('badge-contas')
-    const mobBadge = document.getElementById('mob-badge-contas')
-    if (mobBadge && badge) {
-      mobBadge.textContent    = badge.textContent
-      mobBadge.style.display  = badge.style.display === 'none' ? 'none' : 'flex'
-    }
-  }
-
   // ── Init ──
   preencherPeriodo(
     ['dash-mes','dash-ano'],
@@ -1162,23 +1160,23 @@
 <nav class="mobile-nav">
   <div class="mobile-nav-inner">
     <button class="mob-nav-btn active" id="mob-dashboard"
-      onclick="navegar('dashboard', document.getElementById('nav-dashboard')); mobSync('dashboard')">
+      onclick="navegar('dashboard', document.getElementById('nav-dashboard'))">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       Dashboard
     </button>
     <button class="mob-nav-btn" id="mob-lancamentos"
-      onclick="navegar('lancamentos', document.getElementById('nav-lancamentos')); mobSync('lancamentos')">
+      onclick="navegar('lancamentos', document.getElementById('nav-lancamentos'))">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Lançamentos
     </button>
     <button class="mob-nav-btn" id="mob-contas"
-      onclick="navegar('contas', document.getElementById('nav-contas')); mobSync('contas')">
+      onclick="navegar('contas', document.getElementById('nav-contas'))">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
       <span class="mob-badge" id="mob-badge-contas"></span>
       Contas
     </button>
     <button class="mob-nav-btn" id="mob-dre"
-      onclick="navegar('dre', document.getElementById('nav-dre')); mobSync('dre')">
+      onclick="navegar('dre', document.getElementById('nav-dre'))">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       DRE
     </button>
