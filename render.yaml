@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: elaconta
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///./elaconta.db
+      - key: ALLOWED_ORIGINS
+        value: https://elaconta.onrender.com
+      - key: EMAIL_REMETENTE
+        sync: false
+      - key: EMAIL_SENHA
+        sync: false
