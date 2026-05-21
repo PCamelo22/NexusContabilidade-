@@ -70,13 +70,84 @@ def limpar_data(data_str: str) -> str:
     return str(data_str)
 
 
+def _normalizar(s):
+    import unicodedata
+    s = unicodedata.normalize("NFD", str(s).lower())
+    return "".join(c for c in s if unicodedata.category(c) != "Mn")
+
+
 def encontrar_coluna(df, *palavras_chave):
-    """Encontra coluna pelo nome aproximado."""
-    for col in df.columns:
-        for kw in palavras_chave:
-            if kw.lower() in str(col).lower():
+    """
+    Encontra coluna pelo nome aproximado.
+    Prioridade: primeira palavra-chave tem precedência sobre as demais.
+    Ignora acentos e maiúsculas/minúsculas.
+    """
+    colunas_norm = {col: _normalizar(col) for col in df.columns}
+    for kw in palavras_chave:
+        kw_norm = _normalizar(kw)
+        for col, col_norm in colunas_norm.items():
+            if kw_norm in col_norm:
                 return col
     return None
+
+
+def detectar_colunas(df):
+    """
+    Detecta colunas para os formatos mais comuns de planilhas financeiras.
+    Retorna dict com: data, desc, valor, credito, debito, tipo, categoria
+
+    Formatos suportados:
+      - Planilha de vendas (Data, Produto, Receita R$)
+      - Extrato bancário (Data, Histórico, Crédito, Débito)
+      - Contabilidade (Competência, Descrição, Tipo, Valor)
+      - ERP/sistema (DT_LANCAMENTO, HISTORICO, NATUREZA, VLR_BRUTO)
+      - OFX/CSV exportado (DTPOSTED, MEMO, TRNAMT)
+      - Notas fiscais (Emissão, Fornecedor, Valor Fatura)
+      - Planilha simples (Data, Descrição, Saída / Entrada)
+    """
+    cols = {c: None for c in ["data", "desc", "valor", "credito", "debito", "tipo", "categoria"]}
+
+    cols["data"] = encontrar_coluna(df,
+        "data", "date", "dtpost", "dt_", "_dt", "dt",
+        "competencia", "vencimento", "emissao", "lancamento",
+        "periodo", "dia", "mes",
+    )
+    cols["desc"] = encontrar_coluna(df,
+        "descri", "historic", "memo", "detalhe", "observ",
+        "produto", "item", "nome", "servico",
+        "operacao", "lancamento", "complemento",
+        "referencia", "narrat", "fornecedor", "cliente",
+        "estabelec", "favorecido", "beneficiar",
+    )
+    cols["valor"] = encontrar_coluna(df,
+        # Mais específicos primeiro
+        "receita", "despesa",
+        "credito", "debito",
+        "entrada", "saida",
+        # Genéricos
+        "valor", "value", "amount", "amt", "trnamt",
+        "quantia", "montante", "importancia",
+        "total", "fatura", "venda",
+        # ERP / sistemas internos
+        "vlr", "vl_", "_vlr", "bruto", "liquido", "liq",
+        "preco",
+    )
+    # Extratos bancários: colunas separadas de crédito e débito
+    cols["credito"] = encontrar_coluna(df,
+        "credito", "credit", "entrada", "receita",
+    )
+    cols["debito"] = encontrar_coluna(df,
+        "debito", "debit", "saida", "despesa",
+    )
+    cols["tipo"] = encontrar_coluna(df,
+        "tipo", "type", "natureza", "dc", "d/c", "debcred",
+        "moviment", "operacao", "trntype",
+    )
+    cols["categoria"] = encontrar_coluna(df,
+        "categor", "classif", "grupo", "subgrupo",
+        "conta", "plano", "centro", "subcategor",
+    )
+    return cols
 
 
 # ── Upload Excel ──────────────────────────────────────────────────────────────
@@ -87,75 +158,128 @@ async def upload_excel(
     db: Session = Depends(get_db),
     usuario=Depends(get_usuario_atual)
 ):
-    verificar_acesso_empresa(usuario, empresa_id, db)  # ← verifica ownership
+    verificar_acesso_empresa(usuario, empresa_id, db)
 
     conteudo = await arquivo.read()
     if len(conteudo) > MAX_UPLOAD_MB * 1024 * 1024:
         raise HTTPException(status_code=400, detail=f"Arquivo maior que {MAX_UPLOAD_MB}MB")
 
     try:
-        if arquivo.filename.endswith(".csv"):
-            df = pd.read_csv(io.BytesIO(conteudo), encoding="utf-8", sep=None, engine="python")
+        # Lê CSV (tenta UTF-8, depois latin-1) ou Excel
+        if arquivo.filename.lower().endswith(".csv"):
+            try:
+                df = pd.read_csv(io.BytesIO(conteudo), encoding="utf-8", sep=None, engine="python")
+            except UnicodeDecodeError:
+                df = pd.read_csv(io.BytesIO(conteudo), encoding="latin-1", sep=None, engine="python")
         else:
             df = pd.read_excel(io.BytesIO(conteudo))
 
         df.columns = [str(c).strip() for c in df.columns]
+        # Remove linhas completamente vazias
+        df = df.dropna(how="all")
 
-        col_data      = encontrar_coluna(df, "data", "date", "dt")
-        col_desc      = encontrar_coluna(df, "descri", "historic", "memo", "detalhe", "produto", "item", "nome", "servico", "serviço")
-        col_valor     = encontrar_coluna(df, "valor", "value", "amount", "quantia", "receita", "despesa", "total", "preco", "preço", "venda")
-        col_tipo      = encontrar_coluna(df, "tipo", "type", "natureza")
-        col_categoria = encontrar_coluna(df, "categor", "classif")
+        cols = detectar_colunas(df)
 
-        # Detecta tipo pelo nome da coluna de valor (ex: "Receita (R$)" → receita)
-        tipo_fixo = None
-        if col_valor:
-            nome_col = col_valor.lower()
-            if "receita" in nome_col or "entrada" in nome_col or "venda" in nome_col:
-                tipo_fixo = "receita"
-            elif "despesa" in nome_col or "saida" in nome_col or "saída" in nome_col or "custo" in nome_col:
-                tipo_fixo = "despesa"
+        # Modo extrato bancário: colunas separadas e distintas de crédito e débito
+        modo_extrato = bool(
+            cols["credito"] and cols["debito"]
+            and cols["credito"] != cols["debito"]
+            and cols["credito"] != cols["valor"]
+            and cols["debito"]  != cols["valor"]
+        )
 
-        if not col_data or not col_valor:
-            colunas_disponiveis = ", ".join(df.columns.tolist())
+        if not cols["data"]:
             raise HTTPException(
                 status_code=400,
-                detail=f"Não foi possível identificar as colunas de data e valor. Colunas encontradas: {colunas_disponiveis}"
+                detail=f"Não foi possível identificar a coluna de data. "
+                       f"Colunas encontradas: {', '.join(df.columns.tolist())}"
             )
+        if not cols["valor"] and not modo_extrato:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Não foi possível identificar a coluna de valor. "
+                       f"Colunas encontradas: {', '.join(df.columns.tolist())}"
+            )
+
+        # Tipo fixo deduzido pelo nome da coluna de valor (normalizado, sem acentos)
+        tipo_fixo = None
+        if cols["valor"] and not modo_extrato:
+            nome_col = _normalizar(cols["valor"])
+            if any(p in nome_col for p in ["receita", "entrada", "venda", "credito", "credit"]):
+                tipo_fixo = "receita"
+            elif any(p in nome_col for p in ["despesa", "saida", "debito", "debit", "custo"]):
+                tipo_fixo = "despesa"
 
         lancamentos = []
         erros = 0
 
         for _, row in df.iterrows():
             try:
-                data  = limpar_data(row[col_data])
-                valor = limpar_valor(row[col_valor])
+                data = limpar_data(row[cols["data"]])
+
+                # ── Modo extrato: processa crédito e débito como linhas separadas
+                if modo_extrato:
+                    val_cred = limpar_valor(row[cols["credito"]])
+                    val_deb  = limpar_valor(row[cols["debito"]])
+                    desc     = str(row[cols["desc"]]).strip() if cols["desc"] else "Importado via Excel"
+                    cat_val  = str(row[cols["categoria"]]).strip() if cols["categoria"] else None
+
+                    if val_cred > 0:
+                        lancamentos.append(Lancamento(
+                            empresa_id=empresa_id, data=data,
+                            descricao=desc[:200],
+                            categoria=cat_val or "Outras Receitas",
+                            tipo="receita", valor=val_cred,
+                            status=StatusLancamento.pendente,
+                            origem="excel", criado_por=int(usuario["sub"]),
+                        ))
+                    if val_deb > 0:
+                        lancamentos.append(Lancamento(
+                            empresa_id=empresa_id, data=data,
+                            descricao=desc[:200],
+                            categoria=cat_val or "Outras Despesas",
+                            tipo="despesa", valor=val_deb,
+                            status=StatusLancamento.pendente,
+                            origem="excel", criado_por=int(usuario["sub"]),
+                        ))
+                    continue
+
+                # ── Modo padrão: uma coluna de valor
+                valor = limpar_valor(row[cols["valor"]])
                 if valor == 0:
                     continue
 
+                # Determina tipo
                 if tipo_fixo:
                     tipo = tipo_fixo
-                elif col_tipo:
-                    tipo_raw = str(row[col_tipo]).lower()
-                    if any(p in tipo_raw for p in ["debit", "saida", "saída", "despesa", "d"]):
+                elif cols["tipo"]:
+                    tipo_raw = str(row[cols["tipo"]]).strip().lower()
+                    DESPESA_KW = ["d", "deb", "debit", "debito", "débito",
+                                  "saida", "saída", "despesa", "c/d", "s"]
+                    RECEITA_KW = ["c", "cred", "credit", "credito", "crédito",
+                                  "entrada", "receita", "c/c", "e"]
+                    if tipo_raw in DESPESA_KW or any(p in tipo_raw for p in ["despesa", "saida", "debit"]):
                         tipo = "despesa"
-                    elif any(p in tipo_raw for p in ["credit", "entrada", "receita", "c"]):
+                    elif tipo_raw in RECEITA_KW or any(p in tipo_raw for p in ["receita", "entrada", "credit"]):
                         tipo = "receita"
                     else:
-                        tipo = detectar_tipo(row[col_valor])
+                        tipo = detectar_tipo(row[cols["valor"]])
                 else:
-                    tipo = detectar_tipo(row[col_valor])
+                    tipo = detectar_tipo(row[cols["valor"]])
 
-                desc      = str(row[col_desc]).strip() if col_desc else "Importado via Excel"
-                categoria = str(row[col_categoria]).strip() if col_categoria else (
-                    "Outras Receitas" if tipo == "receita" else "Outras Despesas"
-                )
+                desc = str(row[cols["desc"]]).strip() if cols["desc"] else "Importado via Excel"
+                if not desc or desc in ("nan", "None", ""):
+                    desc = "Importado via Excel"
+
+                cat_val = str(row[cols["categoria"]]).strip() if cols["categoria"] else None
+                if not cat_val or cat_val in ("nan", "None", ""):
+                    cat_val = "Outras Receitas" if tipo == "receita" else "Outras Despesas"
 
                 lancamentos.append(Lancamento(
                     empresa_id = empresa_id,
                     data       = data,
                     descricao  = desc[:200],
-                    categoria  = categoria,
+                    categoria  = cat_val,
                     tipo       = tipo,
                     valor      = valor,
                     status     = StatusLancamento.pendente,
