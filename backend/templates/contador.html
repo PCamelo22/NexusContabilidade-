@@ -834,6 +834,83 @@
   </div>
 </div>
 
+<!-- Modal Perfil / Edição de Cliente -->
+<div class="modal-overlay" id="modal-perfil">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <div class="modal-title">Perfil do Cliente</div>
+      <button class="modal-close" onclick="fecharPerfil()">×</button>
+    </div>
+    <div id="alerta-perfil" class="alerta"></div>
+
+    <div class="form-grid">
+      <input type="hidden" id="perfil-id" />
+      <div class="form-field form-full">
+        <label>Razão Social *</label>
+        <input type="text" id="perfil-razao" placeholder="Nome completo da empresa" />
+      </div>
+      <div class="form-field">
+        <label>Nome Fantasia</label>
+        <input type="text" id="perfil-fantasia" placeholder="Nome comercial" />
+      </div>
+      <div class="form-field">
+        <label>CNPJ</label>
+        <input type="text" id="perfil-cnpj" placeholder="00.000.000/0000-00" readonly
+          style="background:#F9F9FB;color:var(--muted)" />
+      </div>
+      <div class="form-field">
+        <label>E-mail de acesso</label>
+        <input type="email" id="perfil-email" placeholder="empresa@email.com" readonly
+          style="background:#F9F9FB;color:var(--muted)" />
+      </div>
+      <div class="form-field">
+        <label>Telefone</label>
+        <input type="text" id="perfil-tel" placeholder="(00) 00000-0000" />
+      </div>
+      <div class="form-field" style="position:relative">
+        <label>CEP</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="perfil-cep" placeholder="00000-000" style="flex:1" onblur="buscarCEPPerfil()" />
+          <button class="btn btn-outline btn-sm" onclick="buscarCEPPerfil()">Buscar</button>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Cidade / UF</label>
+        <input type="text" id="perfil-cidade" placeholder="Brasília / DF" />
+      </div>
+      <div class="form-field form-full">
+        <label>Endereço</label>
+        <input type="text" id="perfil-endereco" placeholder="Rua, número, bairro" />
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-outline" onclick="fecharPerfil()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarPerfil()">💾 Salvar Alterações</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmação Exclusão -->
+<div class="modal-overlay" id="modal-excluir">
+  <div class="modal" style="max-width:420px;text-align:center">
+    <div style="font-size:48px;margin-bottom:12px">⚠️</div>
+    <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px">Excluir cliente?</div>
+    <div id="excluir-nome" style="font-size:14px;color:var(--muted);margin-bottom:20px"></div>
+    <div style="font-size:13px;color:var(--muted);background:#FFF5F5;border-radius:8px;
+      padding:12px;margin-bottom:20px;border:1px solid #FEE2E2">
+      Todos os lançamentos e contas a pagar deste cliente serão mantidos,
+      mas o acesso ao sistema será desativado.
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-outline" onclick="fecharExcluir()">Cancelar</button>
+      <button class="btn btn-primary" id="btn-confirmar-excluir"
+        style="background:#EF4444;border-color:#EF4444"
+        onclick="executarExclusao()">Sim, excluir</button>
+    </div>
+  </div>
+</div>
+
 <script>
   const CATEGORIAS = {
     receita: ['Vendas','Serviços','Cartão de Crédito','Cartão de Débito','PIX Recebido','Transferência Recebida','Outras Receitas'],
@@ -911,17 +988,25 @@
     }
 
     el.innerHTML = data.map(e => `
-      <div class="cliente-card" onclick="verCliente(${e.id}, '${e.razao_social.replace(/'/g,"\\'")}')">
-        <div class="cliente-info">
+      <div class="cliente-card">
+        <div class="cliente-info" style="cursor:pointer;flex:1" onclick="verCliente(${e.id}, '${e.razao_social.replace(/'/g,"\\'")}')">
           <div class="cliente-avatar">${e.razao_social.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
           <div>
             <div class="cliente-nome">${e.razao_social}</div>
             <div class="cliente-cnpj">${e.cnpj || 'CNPJ não informado'} · ${e.email}</div>
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px">
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
           <span class="tag tag-verde">Ativo</span>
-          <span style="color:var(--muted);font-size:12px">Ver dashboard →</span>
+          <button onclick="abrirPerfil(${e.id})" style="
+            padding:6px 12px;border-radius:8px;border:1px solid var(--border);
+            background:#fff;font-size:12px;font-weight:500;color:var(--purple);
+            cursor:pointer;font-family:var(--font)">✏️ Perfil</button>
+          <button onclick="confirmarExclusao(${e.id}, '${e.razao_social.replace(/'/g,"\\'")}', event)" style="
+            padding:6px 12px;border-radius:8px;border:1px solid #FEE2E2;
+            background:#FFF5F5;font-size:12px;font-weight:500;color:#EF4444;
+            cursor:pointer;font-family:var(--font)">🗑 Excluir</button>
+          <span style="color:var(--muted);font-size:12px;cursor:pointer" onclick="verCliente(${e.id}, '${e.razao_social.replace(/'/g,"\\'")}')">Ver dashboard →</span>
         </div>
       </div>
     `).join('')
@@ -1085,6 +1170,97 @@
       'emp-senha','emp-tel','emp-cep','emp-cidade','emp-endereco'].forEach(id => {
       document.getElementById(id).value = ''
     })
+  }
+
+  // ── Perfil do cliente ──
+  async function abrirPerfil(empresaId) {
+    const data = await get(`/empresas/${empresaId}`)
+    if (!data) return
+    document.getElementById('perfil-id').value       = data.id
+    document.getElementById('perfil-razao').value    = data.razao_social   || ''
+    document.getElementById('perfil-fantasia').value = data.nome_fantasia  || ''
+    document.getElementById('perfil-cnpj').value     = data.cnpj           || ''
+    document.getElementById('perfil-email').value    = data.email          || ''
+    document.getElementById('perfil-tel').value      = data.telefone       || ''
+    document.getElementById('perfil-cep').value      = data.cep            || ''
+    document.getElementById('perfil-cidade').value   = data.cidade         || ''
+    document.getElementById('perfil-endereco').value = data.endereco       || ''
+    document.getElementById('alerta-perfil').style.display = 'none'
+    document.getElementById('modal-perfil').classList.add('open')
+  }
+
+  function fecharPerfil() {
+    document.getElementById('modal-perfil').classList.remove('open')
+  }
+
+  async function salvarPerfil() {
+    const id = document.getElementById('perfil-id').value
+    const body = {
+      razao_social:  document.getElementById('perfil-razao').value.trim()    || undefined,
+      nome_fantasia: document.getElementById('perfil-fantasia').value.trim() || undefined,
+      telefone:      document.getElementById('perfil-tel').value.trim()      || undefined,
+      cep:           document.getElementById('perfil-cep').value.trim()      || undefined,
+      cidade:        document.getElementById('perfil-cidade').value.trim()   || undefined,
+      endereco:      document.getElementById('perfil-endereco').value.trim() || undefined,
+    }
+    if (!body.razao_social) {
+      mostrarAlerta('alerta-perfil', 'Razão social é obrigatória.', 'red')
+      return
+    }
+    const res = await fetch(`/empresas/${id}`, {
+      method: 'PATCH', headers, body: JSON.stringify(body)
+    })
+    const data = await res.json()
+    if (res.ok) {
+      mostrarAlerta('alerta-perfil', '✅ Dados atualizados com sucesso!', 'verde')
+      carregarClientes()
+      setTimeout(fecharPerfil, 1500)
+    } else {
+      mostrarAlerta('alerta-perfil', data.detail || 'Erro ao salvar.', 'red')
+    }
+  }
+
+  async function buscarCEPPerfil() {
+    const cep = document.getElementById('perfil-cep').value.replace(/\D/g, '')
+    if (cep.length !== 8) return
+    const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
+    const d   = await res.json()
+    if (!d.erro) {
+      document.getElementById('perfil-cidade').value   = `${d.localidade} / ${d.uf}`
+      document.getElementById('perfil-endereco').value = `${d.logradouro}, ${d.bairro}`
+    }
+  }
+
+  // ── Exclusão de cliente ──
+  let _excluirId = null
+
+  function confirmarExclusao(empresaId, nome, event) {
+    event.stopPropagation()   // não ativa o onclick do card
+    _excluirId = empresaId
+    document.getElementById('excluir-nome').textContent = nome
+    document.getElementById('modal-excluir').classList.add('open')
+  }
+
+  function fecharExcluir() {
+    document.getElementById('modal-excluir').classList.remove('open')
+    _excluirId = null
+  }
+
+  async function executarExclusao() {
+    if (!_excluirId) return
+    const btn = document.getElementById('btn-confirmar-excluir')
+    btn.disabled    = true
+    btn.textContent = 'Excluindo...'
+    const res = await fetch(`/empresas/${_excluirId}`, { method: 'DELETE', headers })
+    if (res.ok) {
+      fecharExcluir()
+      carregarClientes()
+    } else {
+      const err = await res.json()
+      alert(err.detail || 'Erro ao excluir cliente.')
+    }
+    btn.disabled    = false
+    btn.textContent = 'Sim, excluir'
   }
 
   async function salvarEmpresa() {
