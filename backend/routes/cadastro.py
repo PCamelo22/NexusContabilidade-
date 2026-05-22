@@ -100,6 +100,38 @@ def confirmar_cadastro(body: ConfirmarCadastro, db: Session = Depends(get_db)):
     return {"ok": True, "mensagem": "Cadastro realizado com sucesso!"}
 
 
+@router.get("/status-email")
+def status_email():
+    """Verifica se as credenciais de e-mail estão configuradas (sem expor senha)."""
+    import os
+    remetente = os.getenv("EMAIL_REMETENTE")
+    senha     = os.getenv("EMAIL_SENHA")
+    if not remetente or not senha:
+        return {
+            "configurado": False,
+            "mensagem": "EMAIL_REMETENTE ou EMAIL_SENHA não definidos nas variáveis de ambiente.",
+            "dica": "Configure no Render > Environment > Add Environment Variable"
+        }
+    return {
+        "configurado": True,
+        "remetente": remetente,
+        "mensagem": "Credenciais configuradas. Use /cadastro/testar-email para enviar um e-mail de teste."
+    }
+
+
+@router.post("/testar-email")
+def testar_email(email_destino: str):
+    """Envia e-mail de teste para verificar se o SMTP está funcionando."""
+    from services.email_service import enviar_codigo
+    import os
+    if not os.getenv("EMAIL_REMETENTE"):
+        raise HTTPException(status_code=400, detail="E-mail não configurado nas variáveis de ambiente.")
+    ok = enviar_codigo(email_destino, "123456", "Teste")
+    if ok:
+        return {"ok": True, "mensagem": f"E-mail de teste enviado para {email_destino}"}
+    raise HTTPException(status_code=500, detail="Falha ao enviar. Verifique EMAIL_REMETENTE, EMAIL_SENHA e se a Senha de App do Gmail está correta.")
+
+
 @router.post("/reenviar")
 def reenviar_codigo(email: str, db: Session = Depends(get_db)):
     entrada = _codigos.get(email)
