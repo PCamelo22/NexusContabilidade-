@@ -35,6 +35,7 @@ class Usuario(Base):
     senha_hash = Column(String(512), nullable=False)
     tipo       = Column(Enum(TipoUsuario), nullable=False)
     ativo      = Column(Boolean, default=True)
+    aprovado   = Column(Boolean, default=False)   # True = contadora aprovou o acesso
     criado_em  = Column(DateTime, server_default=func.now())
 
     empresas   = relationship("Empresa", back_populates="contador", foreign_keys="Empresa.contador_id")

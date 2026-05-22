@@ -312,6 +312,106 @@ def enviar_boleto_disponivel(destinatario: str, nome_empresa: str,
     return _smtp_send(msg, destinatario)
 
 
+def enviar_notificacao_novo_cadastro(nome: str, email: str) -> bool:
+    """Avisa a contadora responsável que um novo usuário se cadastrou e aguarda aprovação."""
+    if not EMAIL_REMETENTE or not EMAIL_SENHA:
+        print(f"[email_service] Novo cadastro pendente: {nome} <{email}> (e-mail não configurado)")
+        return False
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = f"ElaConta — Novo cadastro aguardando aprovação: {nome}"
+    msg["From"]    = EMAIL_REMETENTE
+    msg["To"]      = EMAIL_REMETENTE   # envia para a própria contadora
+
+    html = f"""
+    <html>
+    <body style="font-family:'Plus Jakarta Sans',Arial,sans-serif;background:#F5F3FF;padding:40px 20px">
+      <div style="max-width:480px;margin:0 auto;background:#fff;border-radius:16px;
+                  border:1px solid #EDE9FE;padding:40px">
+        <div style="text-align:center;margin-bottom:28px">
+          <div style="font-size:22px;font-weight:700;
+            background:linear-gradient(135deg,#6B21A8,#EC1E8C);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent">
+            ElaConta
+          </div>
+        </div>
+
+        <h2 style="font-size:18px;font-weight:700;color:#1E1B4B;margin-bottom:8px">
+          🔔 Novo cadastro aguardando aprovação
+        </h2>
+        <p style="font-size:14px;color:#6B7280;margin-bottom:24px">
+          Uma nova contadora se cadastrou no ElaConta e aguarda sua aprovação para acessar o sistema.
+        </p>
+
+        <div style="background:#F5F3FF;border-radius:12px;padding:20px;margin-bottom:24px">
+          <div style="font-size:16px;font-weight:700;color:#1E1B4B">{nome}</div>
+          <div style="font-size:14px;color:#6B7280;margin-top:4px">{email}</div>
+        </div>
+
+        <p style="font-size:13px;color:#6B7280;text-align:center">
+          Acesse o painel da contadora e vá em <strong>Aprovações</strong> para aprovar ou rejeitar.
+        </p>
+
+        <div style="text-align:center;margin-top:20px">
+          <a href="{EMAIL_REMETENTE and 'https://elaconta.onrender.com/contador' or '#'}"
+             style="display:inline-block;padding:12px 28px;border-radius:10px;
+             background:linear-gradient(135deg,#6B21A8,#EC1E8C);color:#fff;
+             font-weight:600;text-decoration:none;font-size:14px">
+            Acessar painel →
+          </a>
+        </div>
+      </div>
+    </body>
+    </html>
+    """
+    msg.attach(MIMEText(html, "html"))
+    return _smtp_send(msg, EMAIL_REMETENTE)
+
+
+def enviar_aprovacao(destinatario: str, nome: str, aprovado: bool) -> bool:
+    """Notifica o usuário sobre o resultado da aprovação."""
+    if not EMAIL_REMETENTE or not EMAIL_SENHA:
+        return False
+
+    if aprovado:
+        assunto = "ElaConta — Seu cadastro foi aprovado! ✅"
+        titulo  = "Cadastro aprovado!"
+        mensagem = "Sua conta foi aprovada. Você já pode acessar o sistema ElaConta."
+        cor     = "#10B981"
+        emoji   = "✅"
+    else:
+        assunto = "ElaConta — Cadastro não aprovado"
+        titulo  = "Cadastro não aprovado"
+        mensagem = "Infelizmente seu cadastro não foi aprovado. Entre em contato com a contadora responsável para mais informações."
+        cor     = "#EF4444"
+        emoji   = "❌"
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = assunto
+    msg["From"]    = EMAIL_REMETENTE
+    msg["To"]      = destinatario
+
+    html = f"""
+    <html>
+    <body style="font-family:'Plus Jakarta Sans',Arial,sans-serif;background:#F5F3FF;padding:40px 20px">
+      <div style="max-width:480px;margin:0 auto;background:#fff;border-radius:16px;
+                  border:1px solid #EDE9FE;padding:40px;text-align:center">
+        <div style="font-size:48px;margin-bottom:16px">{emoji}</div>
+        <div style="font-size:22px;font-weight:700;
+          background:linear-gradient(135deg,#6B21A8,#EC1E8C);
+          -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+          margin-bottom:16px">ElaConta</div>
+        <h2 style="font-size:18px;font-weight:700;color:#1E1B4B;margin-bottom:12px">{titulo}</h2>
+        <p style="font-size:14px;color:#6B7280;margin-bottom:24px">Olá, <strong>{nome}</strong>! {mensagem}</p>
+        {"<a href='https://elaconta.onrender.com/login' style='display:inline-block;padding:12px 28px;border-radius:10px;background:linear-gradient(135deg,#6B21A8,#EC1E8C);color:#fff;font-weight:600;text-decoration:none;font-size:14px'>Acessar o sistema →</a>" if aprovado else ""}
+      </div>
+    </body>
+    </html>
+    """
+    msg.attach(MIMEText(html, "html"))
+    return _smtp_send(msg, destinatario)
+
+
 def enviar_solicitacao(dados) -> bool:
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"ElaConta — Nova solicitação: {dados.nome}"

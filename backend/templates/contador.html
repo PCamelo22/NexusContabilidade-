@@ -456,6 +456,12 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
         <span class="nav-label">Pendentes</span>
       </button>
+      <button class="nav-item" id="nav-aprovacoes" onclick="navegar('aprovacoes', this)" style="position:relative">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+        <span class="nav-label">Aprovações <span id="badge-aprovacoes" style="
+          display:none;background:#EF4444;color:#fff;font-size:10px;font-weight:700;
+          border-radius:10px;padding:1px 6px;margin-left:4px"></span></span>
+      </button>
     </nav>
 
     <div class="sidebar-footer">
@@ -733,6 +739,21 @@
         </div>
       </div>
 
+      <!-- Aprovações -->
+      <div class="page" id="page-aprovacoes">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Aprovações de Cadastro</div>
+            <div class="page-sub">Contadoras que se cadastraram e aguardam liberação de acesso</div>
+          </div>
+          <button class="btn btn-outline" onclick="carregarAprovacoes()">↻ Atualizar</button>
+        </div>
+        <div id="alerta-aprovacoes" class="alerta"></div>
+        <div id="lista-aprovacoes">
+          <div class="loading"><div class="spinner"></div> Carregando...</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1002,6 +1023,89 @@
 
   function sair() { localStorage.clear(); window.location.href = '/login' }
 
+  // ── Aprovações de Cadastro ──
+  async function carregarAprovacoes() {
+    const el = document.getElementById('lista-aprovacoes')
+    el.innerHTML = '<div class="loading"><div class="spinner"></div> Carregando...</div>'
+    const data = await get('/aprovacoes/pendentes')
+    if (!data) return
+
+    // Atualiza badge no menu
+    const badge = document.getElementById('badge-aprovacoes')
+    if (data.length > 0) {
+      badge.textContent   = data.length
+      badge.style.display = 'inline'
+    } else {
+      badge.style.display = 'none'
+    }
+
+    if (!data.length) {
+      el.innerHTML = `
+        <div class="card" style="text-align:center;padding:40px;color:var(--muted)">
+          <div style="font-size:40px;margin-bottom:12px">✅</div>
+          <div style="font-weight:600;margin-bottom:4px">Nenhum cadastro pendente</div>
+          <div style="font-size:13px">Todas as solicitações foram processadas.</div>
+        </div>`
+      return
+    }
+
+    el.innerHTML = data.map(u => `
+      <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:44px;height:44px;border-radius:10px;flex-shrink:0;
+            background:linear-gradient(135deg,#6B21A8,#EC1E8C);
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;font-size:16px;font-weight:700">
+            ${u.nome.split(' ').map(n=>n[0]).slice(0,2).join('')}
+          </div>
+          <div>
+            <div style="font-weight:600;font-size:14px">${u.nome}</div>
+            <div style="font-size:12px;color:var(--muted)">${u.email}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">Cadastrado em ${u.criado_em}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0">
+          <button onclick="aprovar(${u.id}, '${u.nome.replace(/'/g,"\\'")}')" style="
+            padding:8px 16px;border-radius:8px;border:none;
+            background:var(--verde);color:#fff;font-size:13px;
+            font-weight:600;cursor:pointer;font-family:var(--font)">
+            ✅ Aprovar
+          </button>
+          <button onclick="rejeitar(${u.id}, '${u.nome.replace(/'/g,"\\'")}')" style="
+            padding:8px 16px;border-radius:8px;border:1px solid #FEE2E2;
+            background:#FFF5F5;color:#EF4444;font-size:13px;
+            font-weight:600;cursor:pointer;font-family:var(--font)">
+            ❌ Rejeitar
+          </button>
+        </div>
+      </div>
+    `).join('')
+  }
+
+  async function aprovar(id, nome) {
+    if (!confirm(`Aprovar o cadastro de ${nome}?`)) return
+    const res = await fetch(`/aprovacoes/${id}/aprovar`, { method: 'PATCH', headers })
+    const data = await res.json()
+    if (res.ok) {
+      mostrarAlerta('alerta-aprovacoes', `✅ ${data.mensagem}`, 'verde')
+      carregarAprovacoes()
+    } else {
+      mostrarAlerta('alerta-aprovacoes', data.detail || 'Erro ao aprovar.', 'red')
+    }
+  }
+
+  async function rejeitar(id, nome) {
+    if (!confirm(`Rejeitar o cadastro de ${nome}? A conta será desativada.`)) return
+    const res = await fetch(`/aprovacoes/${id}/rejeitar`, { method: 'PATCH', headers })
+    const data = await res.json()
+    if (res.ok) {
+      mostrarAlerta('alerta-aprovacoes', data.mensagem, 'red')
+      carregarAprovacoes()
+    } else {
+      mostrarAlerta('alerta-aprovacoes', data.detail || 'Erro ao rejeitar.', 'red')
+    }
+  }
+
   // ── Sidebar colapsável ──
   function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar')
@@ -1043,6 +1147,7 @@
       const empresaId = document.getElementById('lanc-empresa').value
       if (empresaId) carregarLancamentosRecentes(empresaId)
     }
+    if (pagina === 'aprovacoes') carregarAprovacoes()
     mobSyncCont(pagina)
   }
 
@@ -2061,6 +2166,16 @@
 
   // ── Init ──
   carregarClientes().then(() => verificarPendenciasContadora())
+
+  // Verifica aprovações pendentes ao carregar (para mostrar badge)
+  get('/aprovacoes/pendentes').then(data => {
+    if (!data) return
+    const badge = document.getElementById('badge-aprovacoes')
+    if (badge && data.length > 0) {
+      badge.textContent   = data.length
+      badge.style.display = 'inline'
+    }
+  })
 </script>
 
 <!-- Modal de pendências da contadora -->

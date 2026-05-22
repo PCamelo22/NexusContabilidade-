@@ -53,5 +53,13 @@ def migrar_colunas():
     for col, tipo in novas:
         if col not in cols:
             cur.execute(f"ALTER TABLE contas_pagar ADD COLUMN {col} {tipo}")
+
+    # Migração tabela usuarios
+    cur.execute("PRAGMA table_info(usuarios)")
+    cols_u = {row[1] for row in cur.fetchall()}
+    if "aprovado" not in cols_u:
+        # DEFAULT 1 → todos os usuários existentes já ficam aprovados
+        cur.execute("ALTER TABLE usuarios ADD COLUMN aprovado INTEGER DEFAULT 1")
+        cur.execute("UPDATE usuarios SET aprovado = 1")
     conn.commit()
     conn.close()

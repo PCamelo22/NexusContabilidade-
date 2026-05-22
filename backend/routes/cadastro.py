@@ -90,6 +90,7 @@ def confirmar_cadastro(body: ConfirmarCadastro, db: Session = Depends(get_db)):
         email      = dados["email"],
         senha_hash = hash_senha(dados["senha"]),
         tipo       = TipoUsuario.contador,
+        aprovado   = False,   # aguarda aprovação da contadora responsável
     )
     db.add(usuario)
     db.commit()
@@ -97,7 +98,15 @@ def confirmar_cadastro(body: ConfirmarCadastro, db: Session = Depends(get_db)):
 
     del _codigos[body.email]
 
-    return {"ok": True, "mensagem": "Cadastro realizado com sucesso!"}
+    # Notifica a contadora responsável por e-mail
+    from services.email_service import enviar_notificacao_novo_cadastro
+    enviar_notificacao_novo_cadastro(dados["nome"], dados["email"])
+
+    return {
+        "ok": True,
+        "mensagem": "Cadastro realizado! Aguardando aprovação da contadora responsável. Você receberá um e-mail assim que for aprovado.",
+        "aguardando_aprovacao": True,
+    }
 
 
 @router.get("/status-email")

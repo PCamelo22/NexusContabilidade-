@@ -46,10 +46,11 @@ def autenticar_usuario(db: Session, email: str, senha: str):
 
     if usuario and verificar_senha(senha, usuario.senha_hash):
         return {
-            "id":    usuario.id,
-            "nome":  usuario.nome,
-            "email": usuario.email,
-            "tipo":  usuario.tipo.value,
+            "id":       usuario.id,
+            "nome":     usuario.nome,
+            "email":    usuario.email,
+            "tipo":     usuario.tipo.value,
+            "aprovado": bool(usuario.aprovado),
         }
 
     # Tenta como empresa (cliente)
@@ -81,6 +82,7 @@ def seed(db: Session):
             email      = "contadora@elaconta.com.br",
             senha_hash = hash_senha("123456"),
             tipo       = TipoUsuario.contador,
+            aprovado   = True,
         )
         db.add(contador)
         db.flush()   # garante que contador.id já está disponível

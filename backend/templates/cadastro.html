@@ -226,7 +226,25 @@
     </div>
   </div>
 
-  <!-- Tela 3: Sucesso -->
+  <!-- Tela 3a: Aguardando aprovação -->
+  <div class="card" id="tela-aprovacao" style="display:none;text-align:center">
+    <div style="font-size:56px;margin-bottom:16px">⏳</div>
+    <div class="card-title" style="justify-content:center">Cadastro enviado!</div>
+    <div class="card-sub" style="margin-bottom:16px">
+      Seu e-mail foi confirmado com sucesso.
+    </div>
+    <div style="background:#FFF3CD;border:1px solid #FFC107;border-radius:10px;
+      padding:16px;font-size:13px;color:#856404;margin-bottom:24px;text-align:left">
+      <strong>⏳ Aguardando aprovação</strong><br><br>
+      Sua conta ainda precisa ser aprovada pela contadora responsável antes de você poder acessar o sistema.
+      Você receberá um e-mail assim que for aprovado.
+    </div>
+    <button class="btn btn-outline" onclick="window.location.href='/login'">
+      Voltar ao login
+    </button>
+  </div>
+
+  <!-- Tela 3b: Sucesso direto (caso não exija aprovação) -->
   <div class="card" id="tela-sucesso" style="display:none;text-align:center">
     <div style="font-size:56px;margin-bottom:16px">🎉</div>
     <div class="card-title" style="justify-content:center">Cadastro realizado!</div>
@@ -354,11 +372,15 @@
         return
       }
 
-      // Sucesso
-      document.getElementById('tela-codigo').style.display  = 'none'
-      document.getElementById('tela-sucesso').style.display = 'block'
+      // Sucesso — mostra tela de aprovação pendente ou sucesso direto
+      document.getElementById('tela-codigo').style.display = 'none'
       document.getElementById('step-2').className = 'step done'
       document.getElementById('step-3').className = 'step done'
+      if (data.aguardando_aprovacao) {
+        document.getElementById('tela-aprovacao').style.display = 'block'
+      } else {
+        document.getElementById('tela-sucesso').style.display = 'block'
+      }
 
     } catch {
       mostrarAlerta('alerta-codigo', 'Erro de conexão.', 'red')

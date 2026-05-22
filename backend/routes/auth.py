@@ -43,6 +43,13 @@ def login(request: Request, dados: LoginInput, db: Session = Depends(get_db)):
             detail="E-mail ou senha incorretos"
         )
 
+    # Contadoras precisam de aprovação para acessar o sistema
+    if usuario["tipo"] == "contador" and not usuario.get("aprovado", True):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Cadastro aguardando aprovação da contadora responsável. Você receberá um e-mail quando for aprovado."
+        )
+
     token = criar_token({
         "sub":  str(usuario["id"]),
         "tipo": usuario["tipo"],
