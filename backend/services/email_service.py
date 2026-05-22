@@ -19,8 +19,11 @@ def gerar_codigo() -> str:
 
 
 def _smtp_send(msg: MIMEMultipart, destinatario: str) -> bool:
+    if not EMAIL_REMETENTE or not EMAIL_SENHA:
+        print("[email_service] EMAIL_REMETENTE ou EMAIL_SENHA não configurados — e-mail ignorado")
+        return False
     try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10) as smtp:
             smtp.login(EMAIL_REMETENTE, EMAIL_SENHA)
             smtp.sendmail(EMAIL_REMETENTE, destinatario, msg.as_string())
         return True

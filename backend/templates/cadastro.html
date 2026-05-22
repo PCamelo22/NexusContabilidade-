@@ -196,6 +196,13 @@
     <div class="card-title">Confirme seu e-mail</div>
     <div class="card-sub" id="codigo-sub">Digite o código de 6 dígitos enviado para o seu e-mail.</div>
 
+    <div id="codigo-debug-box" style="
+      display:none; background:#FFF3CD; border:1px solid #FFC107;
+      border-radius:8px; padding:12px 16px; margin-bottom:12px;
+      font-size:28px; font-weight:700; letter-spacing:8px;
+      color:#856404; text-align:center; font-family:monospace">
+    </div>
+
     <div id="alerta-codigo" class="alerta"></div>
 
     <div class="codigo-wrap">
@@ -271,8 +278,25 @@
       }
 
       emailCadastro = email
-      document.getElementById('codigo-sub').textContent =
-        `Digite o código de 6 dígitos enviado para ${email}.`
+
+      // Se e-mail não configurado no servidor, mostra o código direto na tela
+      if (data.codigo_debug) {
+        document.getElementById('codigo-sub').textContent =
+          `E-mail não configurado. Seu código de confirmação é:`
+        const debugEl = document.getElementById('codigo-debug-box')
+        if (debugEl) {
+          debugEl.textContent = data.codigo_debug
+          debugEl.style.display = 'block'
+        }
+        // Preenche os campos automaticamente
+        data.codigo_debug.split('').forEach((d, i) => {
+          const el = document.getElementById(`c${i}`)
+          if (el) el.value = d
+        })
+      } else {
+        document.getElementById('codigo-sub').textContent =
+          `Digite o código de 6 dígitos enviado para ${email}.`
+      }
 
       // Avança para tela 2
       document.getElementById('tela-dados').style.display   = 'none'

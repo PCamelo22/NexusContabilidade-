@@ -57,6 +57,14 @@ def solicitar_cadastro(request: Request, dados: SolicitarCadastro, db: Session =
 
     ok = enviar_codigo(dados.email, codigo, dados.nome)
     if not ok:
+        # E-mail não configurado ou falhou — retorna o código no response para testes
+        import os
+        if not os.getenv("EMAIL_REMETENTE") or not os.getenv("EMAIL_SENHA"):
+            return {
+                "ok": True,
+                "mensagem": f"E-mail não configurado. Use o código abaixo para confirmar.",
+                "codigo_debug": codigo   # visível apenas quando email não está configurado
+            }
         raise HTTPException(status_code=500, detail="Erro ao enviar e-mail. Verifique as configurações.")
 
     return {"ok": True, "mensagem": f"Código enviado para {dados.email}"}
