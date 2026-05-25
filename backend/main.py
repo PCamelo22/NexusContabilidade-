@@ -15,7 +15,7 @@ from database import engine, SessionLocal, Base, migrar_colunas
 from models import *
 from services.auth_service import seed
 from routes import auth, empresas, financeiro, uploads, cadastro, aprovacoes
-from config import APP_NOME, APP_VERSAO, ALLOWED_ORIGINS
+from config import APP_NOME, APP_VERSAO, ALLOWED_ORIGINS, IS_PRODUCTION
 from limiter import limiter
 
 # ── Cria tabelas ──────────────────────────────────────────────────────────────
@@ -33,10 +33,13 @@ def init_db():
 init_db()
 
 # ── App ───────────────────────────────────────────────────────────────────────
+# Em produção o Swagger UI (/docs) e o ReDoc (/redoc) ficam desativados
 app = FastAPI(
     title=APP_NOME,
     version=APP_VERSAO,
-    docs_url="/docs",
+    docs_url=None  if IS_PRODUCTION else "/docs",
+    redoc_url=None if IS_PRODUCTION else "/redoc",
+    openapi_url=None if IS_PRODUCTION else "/openapi.json",
 )
 
 app.state.limiter = limiter
@@ -55,10 +58,33 @@ app.add_middleware(
 @app.middleware("http")
 async def security_headers(request: Request, call_next):
     response = await call_next(request)
+
+    # Proteção básica (todos os ambientes)
     response.headers["X-Content-Type-Options"]  = "nosniff"
     response.headers["X-Frame-Options"]         = "DENY"
     response.headers["X-XSS-Protection"]        = "1; mode=block"
     response.headers["Referrer-Policy"]         = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"]      = (
+        "geolocation=(), microphone=(), camera=(), payment=()"
+    )
+
+    # CSP — bloqueia injeção de scripts externos maliciosos
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
+        "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; "
+        "img-src 'self' data: blob:; "
+        "connect-src 'self'; "
+        "frame-ancestors 'none';"
+    )
+
+    # HSTS — força HTTPS por 1 ano (somente em produção)
+    if IS_PRODUCTION:
+        response.headers["Strict-Transport-Security"] = (
+            "max-age=31536000; includeSubDomains"
+        )
+
     return response
 
 # ── Rotas API ─────────────────────────────────────────────────────────────────

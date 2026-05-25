@@ -1,16 +1,42 @@
 # config.py — ElaConta v1.0
 
 import os
+import sys
+import logging
 from dotenv import load_dotenv
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 APP_NOME   = "ElaConta"
 APP_VERSAO = "1.0"
 APP_DESC   = "Contabilidade inteligente"
 
+# ── Modo de execução ──────────────────────────────────────────────────────────
+# Render injeta a variável de ambiente RENDER=true automaticamente
+IS_PRODUCTION = os.getenv("RENDER", "").lower() in ("true", "1", "yes")
+IS_DEBUG = not IS_PRODUCTION
+
 # ── Segurança ─────────────────────────────────────────────────────────────────
-SECRET_KEY    = os.getenv("SECRET_KEY", "elaconta-secret-key-troque-em-producao")
+_DEFAULT_SECRET = "elaconta-secret-key-troque-em-producao"
+SECRET_KEY = os.getenv("SECRET_KEY", _DEFAULT_SECRET)
+
+if SECRET_KEY == _DEFAULT_SECRET:
+    if IS_PRODUCTION:
+        # Em produção, impede a inicialização com chave fraca
+        logger.critical(
+            "🚨  SECRET_KEY padrão detectada em ambiente de produção (Render)! "
+            "Defina a variável de ambiente SECRET_KEY com um valor seguro (≥32 caracteres) "
+            "no painel do Render antes de iniciar."
+        )
+        sys.exit(1)
+    else:
+        logger.warning(
+            "⚠️  SECRET_KEY padrão em uso — OK apenas em desenvolvimento local. "
+            "Nunca use este valor em produção."
+        )
+
 ALGORITHM     = "HS256"
 TOKEN_EXPIRY  = 60 * 24  # 24 horas em minutos
 

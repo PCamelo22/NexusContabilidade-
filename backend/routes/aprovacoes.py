@@ -1,12 +1,13 @@
 # routes/aprovacoes.py — ElaConta v1.0
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Usuario, TipoUsuario
 from services.auth_service import decodificar_token
 from services.email_service import enviar_aprovacao
 from fastapi.security import OAuth2PasswordBearer
+from limiter import limiter
 
 router = APIRouter(prefix="/aprovacoes", tags=["aprovacoes"])
 oauth2 = OAuth2PasswordBearer(tokenUrl="/auth/login")
@@ -22,7 +23,9 @@ def exigir_contador(token: str = Depends(oauth2)):
 
 
 @router.get("/pendentes")
+@limiter.limit("30/minute")
 def listar_pendentes(
+    request: Request,
     db: Session = Depends(get_db),
     usuario=Depends(exigir_contador)
 ):
@@ -44,7 +47,9 @@ def listar_pendentes(
 
 
 @router.patch("/{usuario_id}/aprovar")
+@limiter.limit("20/minute")
 def aprovar(
+    request: Request,
     usuario_id: int,
     db: Session = Depends(get_db),
     usuario=Depends(exigir_contador)
@@ -63,7 +68,9 @@ def aprovar(
 
 
 @router.patch("/{usuario_id}/rejeitar")
+@limiter.limit("20/minute")
 def rejeitar(
+    request: Request,
     usuario_id: int,
     db: Session = Depends(get_db),
     usuario=Depends(exigir_contador)

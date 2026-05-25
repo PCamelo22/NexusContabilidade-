@@ -11,6 +11,7 @@ from models import Lancamento, ContaPagar, Empresa, TipoLancamento, StatusLancam
 from services.auth_service import decodificar_token
 from services.email_service import enviar_nova_conta
 from fastapi.security import OAuth2PasswordBearer
+from limiter import limiter
 import threading
 
 router = APIRouter(prefix="/financeiro", tags=["financeiro"])
@@ -195,7 +196,9 @@ def listar_lancamentos(
 
 
 @router.post("/lancamentos/{empresa_id}")
+@limiter.limit("60/minute")
 def criar_lancamento(
+    request: Request,
     empresa_id: int,
     dados: LancamentoCreate,
     db: Session = Depends(get_db),
@@ -311,6 +314,7 @@ def listar_todas_contas(
 
 
 @router.post("/contas-pagar/{empresa_id}")
+@limiter.limit("30/minute")
 def criar_conta(
     request: Request,
     empresa_id: int,

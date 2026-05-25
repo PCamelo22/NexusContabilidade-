@@ -14,6 +14,45 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 _codigos_recuperacao: dict = {}
 
+# ── Bloqueio temporário por tentativas falhas ─────────────────────────────────
+# { "email": {"tentativas": int, "bloqueado_ate": datetime | None} }
+_tentativas_login: dict = {}
+_MAX_TENTATIVAS  = 5
+_BLOQUEIO_MINUTOS = 15
+
+
+def _verificar_bloqueio(email: str):
+    """Lança 429 se o e-mail estiver temporariamente bloqueado."""
+    estado = _tentativas_login.get(email)
+    if not estado:
+        return
+    if estado.get("bloqueado_ate") and datetime.utcnow() < estado["bloqueado_ate"]:
+        restante = int((estado["bloqueado_ate"] - datetime.utcnow()).total_seconds() // 60) + 1
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=(
+                f"Conta temporariamente bloqueada por {_BLOQUEIO_MINUTOS} min "
+                f"após {_MAX_TENTATIVAS} tentativas incorretas. "
+                f"Tente novamente em {restante} min."
+            ),
+        )
+    # Bloqueio expirado — limpa o registro
+    if estado.get("bloqueado_ate") and datetime.utcnow() >= estado["bloqueado_ate"]:
+        del _tentativas_login[email]
+
+
+def _registrar_falha(email: str):
+    """Incrementa contador; bloqueia se atingir o limite."""
+    estado = _tentativas_login.setdefault(email, {"tentativas": 0, "bloqueado_ate": None})
+    estado["tentativas"] += 1
+    if estado["tentativas"] >= _MAX_TENTATIVAS:
+        estado["bloqueado_ate"] = datetime.utcnow() + timedelta(minutes=_BLOQUEIO_MINUTOS)
+
+
+def _registrar_sucesso(email: str):
+    """Zera o contador em caso de login bem-sucedido."""
+    _tentativas_login.pop(email, None)
+
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
 class LoginInput(BaseModel):
@@ -35,9 +74,15 @@ class RedefinirSenha(BaseModel):
 @router.post("/login")
 @limiter.limit("10/minute")
 def login(request: Request, dados: LoginInput, db: Session = Depends(get_db)):
+    email_norm = dados.email.strip().lower()
+
+    # Verificar se a conta está temporariamente bloqueada
+    _verificar_bloqueio(email_norm)
+
     usuario = autenticar_usuario(db, dados.email, dados.senha)
 
     if not usuario:
+        _registrar_falha(email_norm)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="E-mail ou senha incorretos"
@@ -49,6 +94,8 @@ def login(request: Request, dados: LoginInput, db: Session = Depends(get_db)):
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Cadastro aguardando aprovação da contadora responsável. Você receberá um e-mail quando for aprovado."
         )
+
+    _registrar_sucesso(email_norm)
 
     token = criar_token({
         "sub":  str(usuario["id"]),

@@ -14,9 +14,28 @@ from services.auth_service import decodificar_token
 from services.email_service import enviar_boleto_disponivel
 from fastapi.security import OAuth2PasswordBearer
 from config import UPLOAD_DIR, MAX_UPLOAD_MB
+from limiter import limiter
 
 router = APIRouter(prefix="/uploads", tags=["uploads"])
 oauth2 = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+# ── Magic bytes para validação real de tipo de arquivo ────────────────────────
+_MAGIC = {
+    "xlsx": b"PK\x03\x04",           # ZIP (OOXML)
+    "xls":  b"\xd0\xcf\x11\xe0",     # OLE2 Compound
+    "pdf":  b"%PDF",
+}
+
+def _validar_magic(conteudo: bytes, extensao: str) -> bool:
+    """Verifica se os bytes iniciais batem com o tipo esperado."""
+    ext = extensao.lstrip(".").lower()
+    if ext == "csv":
+        # CSV é texto puro — aceita se não começa com bytes de arquivo binário
+        return conteudo[:3] not in (b"\xd0\xcf\x11", b"PK\x03\x04", b"%PDF")
+    assinatura = _MAGIC.get(ext)
+    if not assinatura:
+        return False
+    return conteudo[:len(assinatura)] == assinatura
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -152,7 +171,9 @@ def detectar_colunas(df):
 
 # ── Upload Excel ──────────────────────────────────────────────────────────────
 @router.post("/excel/{empresa_id}")
+@limiter.limit("20/minute")
 async def upload_excel(
+    request: Request,
     empresa_id: int,
     arquivo: UploadFile = File(...),
     db: Session = Depends(get_db),
@@ -160,9 +181,21 @@ async def upload_excel(
 ):
     verificar_acesso_empresa(usuario, empresa_id, db)
 
+    # Valida extensão permitida
+    ext = os.path.splitext(arquivo.filename or "")[1].lower()
+    if ext not in (".xlsx", ".xls", ".csv"):
+        raise HTTPException(status_code=400, detail="Formato inválido. Envie .xlsx, .xls ou .csv")
+
     conteudo = await arquivo.read()
     if len(conteudo) > MAX_UPLOAD_MB * 1024 * 1024:
         raise HTTPException(status_code=400, detail=f"Arquivo maior que {MAX_UPLOAD_MB}MB")
+
+    # Valida magic bytes (bloqueia arquivos renomeados)
+    if not _validar_magic(conteudo, ext):
+        raise HTTPException(
+            status_code=400,
+            detail="O arquivo não corresponde ao formato declarado. Envie um arquivo Excel ou CSV genuíno."
+        )
 
     try:
         # Lê CSV (tenta UTF-8, depois latin-1) ou Excel
@@ -308,7 +341,9 @@ async def upload_excel(
 
 # ── Upload PDF ────────────────────────────────────────────────────────────────
 @router.post("/pdf/{empresa_id}")
+@limiter.limit("20/minute")
 async def upload_pdf(
+    request: Request,
     empresa_id: int,
     arquivo: UploadFile = File(...),
     db: Session = Depends(get_db),
@@ -316,9 +351,21 @@ async def upload_pdf(
 ):
     verificar_acesso_empresa(usuario, empresa_id, db)  # ← verifica ownership
 
+    # Valida extensão
+    ext = os.path.splitext(arquivo.filename or "")[1].lower()
+    if ext != ".pdf":
+        raise HTTPException(status_code=400, detail="Formato inválido. Envie um arquivo .pdf")
+
     conteudo = await arquivo.read()
     if len(conteudo) > MAX_UPLOAD_MB * 1024 * 1024:
         raise HTTPException(status_code=400, detail=f"Arquivo maior que {MAX_UPLOAD_MB}MB")
+
+    # Valida magic bytes
+    if not _validar_magic(conteudo, "pdf"):
+        raise HTTPException(
+            status_code=400,
+            detail="O arquivo não é um PDF válido. Verifique o arquivo e tente novamente."
+        )
 
     try:
         import re
@@ -380,6 +427,7 @@ async def upload_pdf(
 
 # ── Upload Boleto (PDF da conta a pagar) ─────────────────────────────────────
 @router.post("/boleto/{conta_id}")
+@limiter.limit("20/minute")
 async def upload_boleto(
     request:  Request,
     conta_id: int,
@@ -437,7 +485,9 @@ async def upload_boleto(
 
 # ── Upload Comprovante (cliente envia prova de pagamento) ─────────────────────
 @router.post("/comprovante/{conta_id}")
+@limiter.limit("20/minute")
 async def upload_comprovante(
+    request:  Request,
     conta_id: int,
     arquivo:  UploadFile = File(...),
     db:       Session    = Depends(get_db),
