@@ -154,11 +154,12 @@
       border-radius: 12px; padding: 16px;
     }
     .valor-icon {
-      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      width: 44px; height: 44px; border-radius: 11px; flex-shrink: 0;
       background: linear-gradient(135deg, #F5F3FF, #FDF2F8);
+      border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
     }
+    .valor-icon svg { width: 20px; height: 20px; stroke: var(--purple); }
     .valor-titulo { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
     .valor-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
@@ -178,7 +179,13 @@
       box-shadow: 0 4px 16px rgba(107,33,168,0.1);
       transform: translateY(-2px);
     }
-    .servico-icon { font-size: 32px; margin-bottom: 12px; }
+    .servico-icon {
+      width: 48px; height: 48px; border-radius: 12px; margin-bottom: 14px;
+      background: linear-gradient(135deg, #F5F3FF, #FDF2F8);
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border);
+    }
+    .servico-icon svg { width: 22px; height: 22px; stroke: var(--purple); }
     .servico-titulo { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
     .servico-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
@@ -368,21 +375,27 @@
 
       <div class="sobre-valores">
         <div class="valor-item">
-          <div class="valor-icon">🎯</div>
+          <div class="valor-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
           <div>
             <div class="valor-titulo">Missão</div>
             <div class="valor-desc">Transformar vidas por meio da educação financeira e contábil, formando empreendedores mais conscientes e estratégicos.</div>
           </div>
         </div>
         <div class="valor-item">
-          <div class="valor-icon">🔭</div>
+          <div class="valor-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
           <div>
             <div class="valor-titulo">Visão</div>
             <div class="valor-desc">Ser referência na formação de alunos e empreendedores na área de finanças, contribuindo para uma sociedade mais educada financeiramente.</div>
           </div>
         </div>
         <div class="valor-item">
-          <div class="valor-icon">💎</div>
+          <div class="valor-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
           <div>
             <div class="valor-titulo">Valores</div>
             <div class="valor-desc">Ética, transparência, compromisso com a verdade, empatia no atendimento e excelência profissional.</div>
@@ -402,47 +415,65 @@
 
     <div class="servicos-grid">
       <div class="servico-card">
-        <div class="servico-icon">🏢</div>
+        <div class="servico-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M9 8h1m4 0h1M9 12h1m4 0h1M9 16h1m4 0h1M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16"/></svg>
+        </div>
         <div class="servico-titulo">Abertura de Empresa</div>
         <div class="servico-desc">Abertura de MEI, ME e EPP com todo o processo burocrático facilitado para você.</div>
       </div>
       <div class="servico-card">
-        <div class="servico-icon">📋</div>
+        <div class="servico-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
         <div class="servico-titulo">Baixa de Empresa</div>
         <div class="servico-desc">Encerramento correto da sua empresa, evitando pendências fiscais e dívidas futuras.</div>
       </div>
       <div class="servico-card">
-        <div class="servico-icon">⚖️</div>
+        <div class="servico-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
         <div class="servico-titulo">Regularização</div>
         <div class="servico-desc">Resolução de pendências fiscais, regularização de CNPJ e certidões negativas.</div>
       </div>
       <div class="servico-card">
-        <div class="servico-icon">📄</div>
+        <div class="servico-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        </div>
         <div class="servico-titulo">Emissão de DAS</div>
         <div class="servico-desc">Emissão e controle das guias de pagamento do Simples Nacional para MEI e ME.</div>
       </div>
       <div class="servico-card">
-        <div class="servico-icon">📊</div>
+        <div class="servico-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0120 9.414V19a2 2 0 01-2 2z"/></svg>
+        </div>
         <div class="servico-titulo">Declaração Anual</div>
         <div class="servico-desc">DASN-SIMEI e DEFIS entregues no prazo, sem multas nem surpresas.</div>
       </div>
       <div class="servico-card">
-        <div class="servico-icon">🧾</div>
+        <div class="servico-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l6-6m-5 0l.01 0M14 14l.01 0M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z"/></svg>
+        </div>
         <div class="servico-titulo">Emissão de Nota Fiscal</div>
         <div class="servico-desc">Configuração e emissão de NF-e e NFS-e para sua empresa operar corretamente.</div>
       </div>
       <div class="servico-card">
-        <div class="servico-icon">💡</div>
+        <div class="servico-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+        </div>
         <div class="servico-titulo">Consultoria</div>
         <div class="servico-desc">Orientação estratégica em finanças empresariais e planejamento tributário personalizado.</div>
       </div>
       <div class="servico-card">
-        <div class="servico-icon">🔄</div>
+        <div class="servico-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        </div>
         <div class="servico-titulo">Mudança MEI para ME</div>
         <div class="servico-desc">Migração completa quando seu negócio cresce além dos limites do MEI.</div>
       </div>
       <div class="servico-card">
-        <div class="servico-icon">🎓</div>
+        <div class="servico-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </div>
         <div class="servico-titulo">Mentoria Financeira</div>
         <div class="servico-desc">Mentoria personalizada em educação financeira para empreendedores que querem crescer com consciência.</div>
       </div>
@@ -453,9 +484,9 @@
 <!-- Calculadora -->
 <div id="calculadora">
   <div class="section">
-    <div class="section-tag">Simulação de honorários</div>
-    <div class="section-title">Quanto vai custar?</div>
-    <div class="section-sub">Simule o valor dos serviços contábeis para o seu negócio com base na tabela de referência 2025.</div>
+    <div class="section-tag">Proposta personalizada</div>
+    <div class="section-title">Qual é o honorário?</div>
+    <div class="section-sub">Os valores são definidos de forma personalizada após análise do seu perfil empresarial. Preencha abaixo para receber uma proposta.</div>
 
     <div class="calc-wrap">
       <div class="calc-grid">
@@ -498,18 +529,18 @@
       </div>
 
       <div class="calc-resultado" id="calc-resultado">
-        <div class="calc-valor-label">Honorário mensal estimado</div>
-        <div class="calc-valor" id="calc-valor-texto">—</div>
-        <div class="calc-obs" id="calc-obs">Valor de referência — sujeito a análise da contadora</div>
+        <div class="calc-valor-label">Honorário mensal</div>
+        <div class="calc-valor" id="calc-valor-texto" style="font-size:32px">A Combinar</div>
+        <div class="calc-obs" id="calc-obs">Proposta enviada pela contadora após análise do seu perfil</div>
         <div class="calc-inclusos" id="calc-inclusos"></div>
       </div>
 
       <button class="btn-calc" onclick="irParaContato()">
-        Solicitar atendimento com este valor →
+        Solicitar proposta para este perfil →
       </button>
 
       <div style="font-size:12px;color:var(--muted);text-align:center">
-        Valores baseados na tabela de honorários contábeis ASSCON 2025. O valor final é definido após análise da contadora.
+        O honorário é definido individualmente pela contadora com base no perfil da sua empresa.
       </div>
     </div>
   </div>
@@ -621,66 +652,36 @@
 </footer>
 
 <script>
-  // ── Tabela de honorários ASSCON 2025 ──
-  const TABELA = {
-    mei: {
-      servicos:  { ate81: 400 },
-      comercio:  { ate81: 550 },
-      industria: { ate81: 650 },
-    },
-    me: {
-      servicos:  { ate180: 814,  ate360: 1629 },
-      comercio:  { ate180: 1065, ate360: 1880 },
-      industria: { ate180: 1185, ate360: 2000 },
-    },
-    epp: {
-      servicos:  { ate720: 2440, ate1800: 3254 },
-      comercio:  { ate720: 2691, ate1800: 3505 },
-      industria: { ate720: 2811, ate1800: 3625 },
-    }
-  }
-
+  // ── Serviços incluídos por porte ──
   const INCLUSOS = {
     mei: ['DAS mensal', 'Declaração Anual (DASN)', 'Emissão de NF', 'Suporte via WhatsApp'],
     me:  ['Escrituração contábil', 'Apuração de impostos', 'Folha de pagamento', 'DRE mensal', 'Suporte dedicado'],
     epp: ['Contabilidade completa', 'Planejamento tributário', 'Folha de pagamento', 'DRE e Balanço', 'Consultoria mensal', 'Suporte prioritário'],
   }
 
-  let honorarioCalculado = ''
+  let perfilSelecionado = ''
 
   function calcular() {
-    const porte      = document.getElementById('calc-porte').value
-    const segmento   = document.getElementById('calc-segmento').value
-    const faturamento= document.getElementById('calc-faturamento').value
-    const func       = document.getElementById('calc-func').value
+    const porte       = document.getElementById('calc-porte').value
+    const segmento    = document.getElementById('calc-segmento').value
+    const faturamento = document.getElementById('calc-faturamento').value
+    const func        = document.getElementById('calc-func').value
 
     if (!porte || !segmento || !faturamento) return
 
-    const tabPorte = TABELA[porte]
-    if (!tabPorte) return
-    const tabSeg = tabPorte[segmento]
-    if (!tabSeg) return
-
-    // Pega o valor da faixa
-    let valor = tabSeg[faturamento]
-    if (!valor) {
-      // Pega o maior disponível
-      const valores = Object.values(tabSeg)
-      valor = valores[valores.length - 1]
-    }
-
-    // Acréscimo por funcionários
-    if (func === 'sim') valor = Math.round(valor * 1.2)
-
-    honorarioCalculado = `R$ ${valor.toLocaleString('pt-BR')}/mês`
+    // Monta descrição do perfil (sem mostrar preço)
+    const porteLabel = { mei: 'MEI', me: 'Microempresa', epp: 'Empresa de Pequeno Porte' }[porte] || porte
+    const segLabel   = { servicos: 'Serviços', comercio: 'Comércio', industria: 'Indústria' }[segmento] || segmento
+    const funcLabel  = func === 'sim' ? ' · Com funcionários' : ''
+    perfilSelecionado = `${porteLabel} · ${segLabel}${funcLabel}`
 
     const res = document.getElementById('calc-resultado')
     res.classList.add('show')
-    document.getElementById('calc-valor-texto').textContent = honorarioCalculado
+    document.getElementById('calc-valor-texto').textContent = 'A Combinar'
 
     const obs = func === 'sim'
-      ? 'Inclui acréscimo de 20% por ter funcionários registrados.'
-      : 'Valor de referência ASSCON 2025 — sujeito a análise.'
+      ? 'Proposta personalizada — perfil com funcionários registrados.'
+      : 'Proposta enviada pela contadora após análise do seu perfil.'
     document.getElementById('calc-obs').textContent = obs
 
     const inclusos = INCLUSOS[porte] || []
@@ -690,7 +691,7 @@
     // Sincroniza com o formulário
     const el = document.getElementById('honorario-selecionado')
     el.style.display = 'block'
-    el.textContent   = `💰 Honorário simulado: ${honorarioCalculado}`
+    el.textContent   = `Perfil selecionado: ${perfilSelecionado}`
   }
 
   function irParaContato() {
@@ -732,7 +733,7 @@
       porte:       document.getElementById('f-porte').value,
       faturamento: document.getElementById('f-faturamento').value,
       mensagem:    document.getElementById('f-mensagem').value.trim() || null,
-      honorario:   honorarioCalculado || null,
+      honorario:   perfilSelecionado ? `A Combinar (${perfilSelecionado})` : null,
     }
 
     try {
