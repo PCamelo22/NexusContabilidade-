@@ -1,4 +1,4 @@
-# routes/financeiro.py — ElaConta v1.0
+# routes/financeiro.py — Nexus v1.0
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session

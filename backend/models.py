@@ -1,5 +1,5 @@
 # ─────────────────────────────────────────────────────────────────────────────
-# models.py — ElaConta v1.0
+# models.py — Nexus v1.0
 # ─────────────────────────────────────────────────────────────────────────────
 
 from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, ForeignKey, Text, Enum

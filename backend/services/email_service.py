@@ -1,4 +1,4 @@
-# email_service.py — ElaConta v1.0
+# email_service.py — Nexus Contabilidade v1.0
 
 import smtplib
 import random
@@ -34,7 +34,7 @@ def _smtp_send(msg: MIMEMultipart, destinatario: str) -> bool:
 
 def enviar_codigo(destinatario: str, codigo: str, nome: str = "") -> bool:
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"ElaConta — Seu código de confirmação: {codigo}"
+    msg["Subject"] = f"Nexus Contabilidade — Seu código de confirmação: {codigo}"
     msg["From"]    = EMAIL_REMETENTE
     msg["To"]      = destinatario
 
@@ -54,7 +54,7 @@ def enviar_codigo(destinatario: str, codigo: str, nome: str = "") -> bool:
           <div style="font-size:22px;font-weight:700;
                       background:linear-gradient(135deg,#6B21A8,#EC1E8C);
                       -webkit-background-clip:text;-webkit-text-fill-color:transparent">
-            ElaConta
+            Nexus Contabilidade
           </div>
         </div>
 
@@ -62,7 +62,7 @@ def enviar_codigo(destinatario: str, codigo: str, nome: str = "") -> bool:
           Olá{', ' + nome if nome else ''}! 👋
         </h2>
         <p style="font-size:14px;color:#6B7280;margin-bottom:28px">
-          Use o código abaixo para confirmar seu cadastro no ElaConta.
+          Use o código abaixo para confirmar seu cadastro no Nexus Contabilidade.
           O código expira em <strong>10 minutos</strong>.
         </p>
 
@@ -87,7 +87,7 @@ def enviar_codigo(destinatario: str, codigo: str, nome: str = "") -> bool:
 
 def enviar_recuperacao(destinatario: str, codigo: str, nome: str = "") -> bool:
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"ElaConta — Código para redefinir senha: {codigo}"
+    msg["Subject"] = f"Nexus Contabilidade — Código para redefinir senha: {codigo}"
     msg["From"]    = EMAIL_REMETENTE
     msg["To"]      = destinatario
 
@@ -106,7 +106,7 @@ def enviar_recuperacao(destinatario: str, codigo: str, nome: str = "") -> bool:
           <div style="font-size:22px;font-weight:700;
                       background:linear-gradient(135deg,#6B21A8,#EC1E8C);
                       -webkit-background-clip:text;-webkit-text-fill-color:transparent">
-            ElaConta
+            Nexus Contabilidade
           </div>
         </div>
 
@@ -176,7 +176,7 @@ def enviar_nova_conta(destinatario: str, nome_empresa: str,
         </div>"""
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"ElaConta — Nova cobrança: {descricao} · {venc}"
+    msg["Subject"] = f"Nexus Contabilidade — Nova cobrança: {descricao} · {venc}"
     msg["From"]    = EMAIL_REMETENTE
     msg["To"]      = destinatario
 
@@ -195,7 +195,7 @@ def enviar_nova_conta(destinatario: str, nome_empresa: str,
           <div style="font-size:22px;font-weight:700;
                       background:linear-gradient(135deg,#6B21A8,#EC1E8C);
                       -webkit-background-clip:text;-webkit-text-fill-color:transparent">
-            ElaConta
+            Nexus Contabilidade
           </div>
         </div>
 
@@ -231,7 +231,7 @@ def enviar_nova_conta(destinatario: str, nome_empresa: str,
              style="display:inline-block;padding:11px 24px;border-radius:10px;
              border:1px solid #DDD6FE;color:#6B21A8;
              font-weight:600;text-decoration:none;font-size:13px">
-            Acessar o ElaConta →
+            Acessar o Nexus Contabilidade →
           </a>
         </div>
 
@@ -260,7 +260,7 @@ def enviar_boleto_disponivel(destinatario: str, nome_empresa: str,
     url_boleto = f"{base_url}{arquivo_url}"
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"ElaConta — Boleto disponível: {descricao}"
+    msg["Subject"] = f"Nexus Contabilidade — Boleto disponível: {descricao}"
     msg["From"]    = EMAIL_REMETENTE
     msg["To"]      = destinatario
 
@@ -279,7 +279,7 @@ def enviar_boleto_disponivel(destinatario: str, nome_empresa: str,
           <div style="font-size:22px;font-weight:700;
                       background:linear-gradient(135deg,#6B21A8,#EC1E8C);
                       -webkit-background-clip:text;-webkit-text-fill-color:transparent">
-            ElaConta
+            Nexus Contabilidade
           </div>
         </div>
 
@@ -301,7 +301,7 @@ def enviar_boleto_disponivel(destinatario: str, nome_empresa: str,
         </div>
 
         <p style="font-size:12px;color:#9CA3AF;text-align:center">
-          Acesse o <a href="{base_url}/cliente" style="color:#6B21A8">ElaConta</a>
+          Acesse o <a href="{base_url}/cliente" style="color:#6B21A8">Nexus Contabilidade</a>
           para enviar o comprovante após o pagamento.
         </p>
       </div>
@@ -319,7 +319,7 @@ def enviar_notificacao_novo_cadastro(nome: str, email: str) -> bool:
         return False
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"ElaConta — Novo cadastro aguardando aprovação: {nome}"
+    msg["Subject"] = f"Nexus Contabilidade — Novo cadastro aguardando aprovação: {nome}"
     msg["From"]    = EMAIL_REMETENTE
     msg["To"]      = EMAIL_REMETENTE   # envia para a própria contadora
 
@@ -332,7 +332,7 @@ def enviar_notificacao_novo_cadastro(nome: str, email: str) -> bool:
           <div style="font-size:22px;font-weight:700;
             background:linear-gradient(135deg,#6B21A8,#EC1E8C);
             -webkit-background-clip:text;-webkit-text-fill-color:transparent">
-            ElaConta
+            Nexus Contabilidade
           </div>
         </div>
 
@@ -340,7 +340,7 @@ def enviar_notificacao_novo_cadastro(nome: str, email: str) -> bool:
           🔔 Novo cadastro aguardando aprovação
         </h2>
         <p style="font-size:14px;color:#6B7280;margin-bottom:24px">
-          Uma nova contadora se cadastrou no ElaConta e aguarda sua aprovação para acessar o sistema.
+          Uma nova contadora se cadastrou no Nexus Contabilidade e aguarda sua aprovação para acessar o sistema.
         </p>
 
         <div style="background:#F5F3FF;border-radius:12px;padding:20px;margin-bottom:24px">
@@ -374,13 +374,13 @@ def enviar_aprovacao(destinatario: str, nome: str, aprovado: bool) -> bool:
         return False
 
     if aprovado:
-        assunto = "ElaConta — Seu cadastro foi aprovado! ✅"
+        assunto = "Nexus Contabilidade — Seu cadastro foi aprovado! ✅"
         titulo  = "Cadastro aprovado!"
-        mensagem = "Sua conta foi aprovada. Você já pode acessar o sistema ElaConta."
+        mensagem = "Sua conta foi aprovada. Você já pode acessar o sistema Nexus Contabilidade."
         cor     = "#10B981"
         emoji   = "✅"
     else:
-        assunto = "ElaConta — Cadastro não aprovado"
+        assunto = "Nexus Contabilidade — Cadastro não aprovado"
         titulo  = "Cadastro não aprovado"
         mensagem = "Infelizmente seu cadastro não foi aprovado. Entre em contato com a contadora responsável para mais informações."
         cor     = "#EF4444"
@@ -400,7 +400,7 @@ def enviar_aprovacao(destinatario: str, nome: str, aprovado: bool) -> bool:
         <div style="font-size:22px;font-weight:700;
           background:linear-gradient(135deg,#6B21A8,#EC1E8C);
           -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-          margin-bottom:16px">ElaConta</div>
+          margin-bottom:16px">Nexus Contabilidade</div>
         <h2 style="font-size:18px;font-weight:700;color:#1E1B4B;margin-bottom:12px">{titulo}</h2>
         <p style="font-size:14px;color:#6B7280;margin-bottom:24px">Olá, <strong>{nome}</strong>! {mensagem}</p>
         {"<a href='https://elaconta.onrender.com/login' style='display:inline-block;padding:12px 28px;border-radius:10px;background:linear-gradient(135deg,#6B21A8,#EC1E8C);color:#fff;font-weight:600;text-decoration:none;font-size:14px'>Acessar o sistema →</a>" if aprovado else ""}
@@ -414,7 +414,7 @@ def enviar_aprovacao(destinatario: str, nome: str, aprovado: bool) -> bool:
 
 def enviar_solicitacao(dados) -> bool:
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"ElaConta — Nova solicitação: {dados.nome}"
+    msg["Subject"] = f"Nexus Contabilidade — Nova solicitação: {dados.nome}"
     msg["From"]    = EMAIL_REMETENTE
     msg["To"]      = EMAIL_REMETENTE
 
@@ -433,7 +433,7 @@ def enviar_solicitacao(dados) -> bool:
           <div style="font-size:22px;font-weight:700;
             background:linear-gradient(135deg,#6B21A8,#EC1E8C);
             -webkit-background-clip:text;-webkit-text-fill-color:transparent">
-            ElaConta
+            Nexus Contabilidade
           </div>
           <div style="font-size:13px;color:#6B7280;margin-top:4px">Nova solicitação de contato</div>
         </div>
@@ -459,7 +459,7 @@ def enviar_solicitacao(dados) -> bool:
         {mensagem_bloco}
 
         <div style="margin-top:24px;text-align:center">
-          <a href="https://wa.me/5561982955839?text=Olá! Vi sua solicitação no ElaConta."
+          <a href="https://wa.me/5561982955839?text=Olá! Vi sua solicitação no Nexus Contabilidade."
              style="display:inline-block;padding:12px 24px;border-radius:10px;
              background:linear-gradient(135deg,#6B21A8,#EC1E8C);color:#fff;
              font-weight:600;text-decoration:none;font-size:14px">

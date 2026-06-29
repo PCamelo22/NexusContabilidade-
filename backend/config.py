@@ -1,4 +1,4 @@
-# config.py — ElaConta v1.0
+# config.py — Nexus v1.0
 
 import os
 import sys
@@ -9,7 +9,7 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-APP_NOME   = "ElaConta"
+APP_NOME   = "Nexus Contabilidade"
 APP_VERSAO = "1.0"
 APP_DESC   = "Contabilidade inteligente"
 
@@ -19,7 +19,7 @@ IS_PRODUCTION = os.getenv("RENDER", "").lower() in ("true", "1", "yes")
 IS_DEBUG = not IS_PRODUCTION
 
 # ── Segurança ─────────────────────────────────────────────────────────────────
-_DEFAULT_SECRET = "elaconta-secret-key-troque-em-producao"
+_DEFAULT_SECRET = "nexus-secret-key-troque-em-producao"
 SECRET_KEY = os.getenv("SECRET_KEY", _DEFAULT_SECRET)
 
 if SECRET_KEY == _DEFAULT_SECRET:
@@ -41,7 +41,7 @@ ALGORITHM     = "HS256"
 TOKEN_EXPIRY  = 60 * 24  # 24 horas em minutos
 
 # ── Banco de dados ────────────────────────────────────────────────────────────
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./elaconta.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./nexuscont.db")
 
 # ── CORS ──────────────────────────────────────────────────────────────────────
 _origens_raw   = os.getenv("ALLOWED_ORIGINS", "http://localhost:8000")

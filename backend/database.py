@@ -1,4 +1,4 @@
-# database.py — ElaConta v1.0
+# database.py — Nexus v1.0
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base

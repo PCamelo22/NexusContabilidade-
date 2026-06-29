@@ -3,22 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ElaConta — Cadastro</title>
+  <title>Nexus Contabilidade — Cadastro</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --purple: #6B21A8;
-      --pink: #EC1E8C;
-      --bg: #F5F3FF;
+      --blue: #2563EB;
+      --blue-dark: #1D4ED8;
+      --blue-light: #EFF6FF;
+      --bg: #F9FAFB;
       --white: #FFFFFF;
-      --border: #EDE9FE;
-      --text: #1E1B4B;
+      --border: #E5E7EB;
+      --border-light: #F3F4F6;
+      --text: #111827;
       --muted: #6B7280;
-      --verde: #10B981;
-      --danger: #EF4444;
-      --font: 'Plus Jakarta Sans', sans-serif;
+      --verde: #059669;
+      --danger: #DC2626;
+      --font: 'Inter', sans-serif;
     }
     body {
       font-family: var(--font);
@@ -34,82 +36,78 @@
     .logo-area { text-align: center; margin-bottom: 28px; }
     .logo-icon {
       display: inline-flex; align-items: center; justify-content: center;
-      width: 56px; height: 56px; border-radius: 16px;
-      background: linear-gradient(135deg, #6B21A8, #EC1E8C);
-      margin-bottom: 10px;
+      width: 52px; height: 52px; border-radius: 14px;
+      background: var(--blue); margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.3);
     }
-    .logo-icon svg { width: 28px; height: 28px; }
-    .logo-name {
-      font-size: 24px; font-weight: 700;
-      background: linear-gradient(135deg, #6B21A8, #EC1E8C);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
+    .logo-icon svg { width: 26px; height: 26px; }
+    .logo-name { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
     .logo-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
 
     .card {
       background: var(--white); border: 1px solid var(--border);
-      border-radius: 16px; padding: 28px;
+      border-radius: 12px; padding: 28px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
     .card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
     .card-sub   { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
 
     .field { margin-bottom: 14px; }
-    .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
     .field input {
       width: 100%; padding: 10px 12px; border-radius: 8px;
       border: 1px solid var(--border); font-size: 14px;
       font-family: var(--font); color: var(--text);
-      background: var(--bg); outline: none; transition: border-color 0.15s;
+      background: var(--white); outline: none; transition: border-color 0.15s;
     }
-    .field input:focus { border-color: var(--purple); }
+    .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
 
     .btn {
-      width: 100%; padding: 12px; border-radius: 10px; border: none;
+      width: 100%; padding: 11px; border-radius: 8px; border: none;
       font-size: 14px; font-weight: 600; font-family: var(--font);
-      cursor: pointer; transition: opacity 0.15s; margin-top: 6px;
+      cursor: pointer; transition: all 0.15s; margin-top: 6px;
     }
-    .btn:hover { opacity: 0.9; }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .btn-primary { background: linear-gradient(135deg, #6B21A8, #EC1E8C); color: #fff; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+    .btn-primary { background: var(--blue); color: #fff; box-shadow: 0 1px 3px rgba(37,99,235,0.3); }
+    .btn-primary:hover { background: var(--blue-dark); box-shadow: 0 2px 4px rgba(37,99,235,0.35); }
     .btn-outline {
-      background: transparent; border: 1px solid var(--border);
-      color: var(--text); margin-top: 8px;
+      background: var(--white); border: 1px solid var(--border);
+      color: var(--text); margin-top: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
+    .btn-outline:hover { border-color: #D1D5DB; background: var(--bg); }
 
     .alerta {
-      padding: 12px 16px; border-radius: 8px;
+      padding: 10px 14px; border-radius: 8px;
       font-size: 13px; margin-bottom: 16px; display: none;
     }
     .alerta-verde { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
     .alerta-red   { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
 
-    /* Código */
     .codigo-wrap {
       display: flex; gap: 8px; justify-content: center;
       margin: 20px 0;
     }
     .codigo-input {
-      width: 44px; height: 52px; border-radius: 10px;
-      border: 2px solid var(--border); font-size: 22px;
+      width: 44px; height: 52px; border-radius: 8px;
+      border: 1px solid var(--border); font-size: 22px;
       font-weight: 700; text-align: center; font-family: var(--font);
-      color: var(--purple); background: var(--bg); outline: none;
+      color: var(--blue); background: var(--white); outline: none;
       transition: border-color 0.15s;
     }
-    .codigo-input:focus { border-color: var(--purple); }
+    .codigo-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
 
     .reenviar {
       text-align: center; font-size: 12px; color: var(--muted);
       margin-top: 12px;
     }
-    .reenviar a { color: var(--purple); cursor: pointer; font-weight: 600; }
+    .reenviar a { color: var(--blue); cursor: pointer; font-weight: 600; }
 
     .footer-link {
       text-align: center; margin-top: 20px;
       font-size: 13px; color: var(--muted);
     }
-    .footer-link a { color: var(--purple); font-weight: 600; text-decoration: none; }
+    .footer-link a { color: var(--blue); font-weight: 600; text-decoration: none; }
 
-    /* Steps */
     .steps {
       display: flex; align-items: center; justify-content: center;
       gap: 8px; margin-bottom: 24px;
@@ -122,7 +120,7 @@
       transition: all 0.2s;
     }
     .step.active {
-      background: linear-gradient(135deg, #6B21A8, #EC1E8C);
+      background: var(--blue);
       border-color: transparent; color: #fff;
     }
     .step.done {
@@ -137,25 +135,26 @@
 <body>
 <div class="wrap">
 
-  <!-- Logo -->
   <div class="logo-area">
     <div class="logo-icon">
       <svg viewBox="0 0 28 28" fill="none">
-        <path d="M14 4L4 22h20L14 4z" fill="white" opacity="0.9"/>
-        <circle cx="14" cy="20" r="2.5" fill="white" opacity="0.6"/>
+        <path d="M17 8A9 9 0 1 0 17 20" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <rect x="7" y="18" width="3" height="5" rx="0.8" fill="white" opacity="0.55"/>
+        <rect x="11" y="14" width="3" height="9" rx="0.8" fill="white" opacity="0.78"/>
+        <rect x="15" y="10" width="2.5" height="13" rx="0.8" fill="white"/>
+        <path d="M17 9.5L22 6L21.5 10" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-    <div class="logo-name">ElaConta</div>
+    <div class="logo-name">Nexus Contabilidade</div>
     <div class="logo-sub">Cadastro de contadora</div>
   </div>
 
-  <!-- Steps -->
   <div class="steps">
     <div class="step active" id="step-1">1</div>
     <div class="step-line"></div>
     <div class="step" id="step-2">2</div>
     <div class="step-line"></div>
-    <div class="step" id="step-3">✓</div>
+    <div class="step" id="step-3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><path d="M20 6 9 17l-5-5"/></svg></div>
   </div>
 
   <!-- Tela 1: Dados -->
@@ -228,14 +227,14 @@
 
   <!-- Tela 3a: Aguardando aprovação -->
   <div class="card" id="tela-aprovacao" style="display:none;text-align:center">
-    <div style="font-size:56px;margin-bottom:16px">⏳</div>
+    <div style="margin-bottom:16px"><svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.5" width="56" height="56"><path d="M5 2h14"/><path d="M5 22h14"/><path d="M17 2v6l-5 4 5 4v6"/><path d="M7 2v6l5 4-5 4v6"/></svg></div>
     <div class="card-title" style="justify-content:center">Cadastro enviado!</div>
     <div class="card-sub" style="margin-bottom:16px">
       Seu e-mail foi confirmado com sucesso.
     </div>
     <div style="background:#FFF3CD;border:1px solid #FFC107;border-radius:10px;
       padding:16px;font-size:13px;color:#856404;margin-bottom:24px;text-align:left">
-      <strong>⏳ Aguardando aprovação</strong><br><br>
+      <strong>Aguardando aprovação</strong><br><br>
       Sua conta ainda precisa ser aprovada pela contadora responsável antes de você poder acessar o sistema.
       Você receberá um e-mail assim que for aprovado.
     </div>
@@ -244,9 +243,9 @@
     </button>
   </div>
 
-  <!-- Tela 3b: Sucesso direto (caso não exija aprovação) -->
+  <!-- Tela 3b: Sucesso direto -->
   <div class="card" id="tela-sucesso" style="display:none;text-align:center">
-    <div style="font-size:56px;margin-bottom:16px">🎉</div>
+    <div style="margin-bottom:16px"><svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.5" width="56" height="56"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
     <div class="card-title" style="justify-content:center">Cadastro realizado!</div>
     <div class="card-sub" style="margin-bottom:24px">
       Sua conta foi criada com sucesso. Faça login para começar.
@@ -261,7 +260,6 @@
 <script>
   let emailCadastro = ''
 
-  // ── Tela 1 → Enviar código ──
   async function enviarCodigo() {
     const nome  = document.getElementById('nome').value.trim()
     const email = document.getElementById('email').value.trim()
@@ -297,7 +295,6 @@
 
       emailCadastro = email
 
-      // Se e-mail não configurado no servidor, mostra o código direto na tela
       if (data.codigo_debug) {
         document.getElementById('codigo-sub').textContent =
           `E-mail não configurado. Seu código de confirmação é:`
@@ -306,7 +303,6 @@
           debugEl.textContent = data.codigo_debug
           debugEl.style.display = 'block'
         }
-        // Preenche os campos automaticamente
         data.codigo_debug.split('').forEach((d, i) => {
           const el = document.getElementById(`c${i}`)
           if (el) el.value = d
@@ -316,7 +312,6 @@
           `Digite o código de 6 dígitos enviado para ${email}.`
       }
 
-      // Avança para tela 2
       document.getElementById('tela-dados').style.display   = 'none'
       document.getElementById('tela-codigo').style.display  = 'block'
       document.getElementById('step-1').className = 'step done'
@@ -331,18 +326,15 @@
     }
   }
 
-  // ── Navegar entre inputs do código ──
   function avancarCodigo(idx) {
     const val = document.getElementById(`c${idx}`).value
     if (val && idx < 5) {
       document.getElementById(`c${idx+1}`).focus()
     }
-    // Auto-confirma se todos preenchidos
     const codigo = Array.from({length:6}, (_,i) => document.getElementById(`c${i}`).value).join('')
     if (codigo.length === 6) confirmarCodigo()
   }
 
-  // ── Tela 2 → Confirmar código ──
   async function confirmarCodigo() {
     const codigo = Array.from({length:6}, (_,i) =>
       document.getElementById(`c${i}`).value
@@ -366,13 +358,11 @@
 
       if (!res.ok) {
         mostrarAlerta('alerta-codigo', data.detail || 'Código incorreto.', 'red')
-        // Limpa os campos
         Array.from({length:6}, (_,i) => { document.getElementById(`c${i}`).value = '' })
         document.getElementById('c0').focus()
         return
       }
 
-      // Sucesso — mostra tela de aprovação pendente ou sucesso direto
       document.getElementById('tela-codigo').style.display = 'none'
       document.getElementById('step-2').className = 'step done'
       document.getElementById('step-3').className = 'step done'
@@ -390,7 +380,6 @@
     }
   }
 
-  // ── Reenviar código ──
   async function reenviarCodigo() {
     try {
       const res = await fetch(`/cadastro/reenviar?email=${encodeURIComponent(emailCadastro)}`, {
@@ -398,7 +387,7 @@
       })
       const data = await res.json()
       if (res.ok) {
-        mostrarAlerta('alerta-codigo', '✅ Código reenviado!', 'verde')
+        mostrarAlerta('alerta-codigo', 'Código reenviado!', 'verde')
       } else {
         mostrarAlerta('alerta-codigo', data.detail || 'Erro ao reenviar.', 'red')
       }
@@ -407,7 +396,6 @@
     }
   }
 
-  // ── Voltar ──
   function voltarDados() {
     document.getElementById('tela-codigo').style.display = 'none'
     document.getElementById('tela-dados').style.display  = 'block'
@@ -415,7 +403,6 @@
     document.getElementById('step-2').className = 'step'
   }
 
-  // ── Helpers ──
   function mostrarAlerta(id, msg, tipo) {
     const el = document.getElementById(id)
     el.textContent   = msg

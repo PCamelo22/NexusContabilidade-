@@ -3,23 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ElaConta — Login</title>
+  <title>Nexus Contabilidade — Login</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --purple: #6B21A8;
-      --purple-l: #7C3AED;
-      --pink: #EC1E8C;
-      --bg: #F5F3FF;
+      --blue: #2563EB;
+      --blue-dark: #1D4ED8;
+      --blue-light: #EFF6FF;
+      --bg: #F9FAFB;
       --white: #FFFFFF;
-      --border: #EDE9FE;
-      --text: #1E1B4B;
+      --border: #E5E7EB;
+      --border-light: #F3F4F6;
+      --text: #111827;
       --muted: #6B7280;
-      --danger: #EF4444;
-      --font: 'Plus Jakarta Sans', sans-serif;
+      --verde: #059669;
+      --danger: #DC2626;
+      --font: 'Inter', sans-serif;
     }
 
     body {
@@ -34,238 +36,172 @@
 
     .wrap { width: 100%; max-width: 400px; }
 
-    /* Logo */
-    .logo-area {
-      text-align: center;
-      margin-bottom: 28px;
-    }
+    .logo-area { text-align: center; margin-bottom: 28px; }
     .logo-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 56px; height: 56px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #6B21A8, #EC1E8C);
-      margin-bottom: 10px;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 52px; height: 52px; border-radius: 14px;
+      background: var(--blue); margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.3);
     }
-    .logo-icon svg { width: 28px; height: 28px; }
-    .logo-name {
-      font-size: 24px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #6B21A8, #EC1E8C);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .logo-sub {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
+    .logo-icon svg { width: 26px; height: 26px; }
+    .logo-name { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+    .logo-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
 
-    /* Card teste */
     .card-teste {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px; margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
     .card-teste-title {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 12px;
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
     }
-    .teste-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
+    .teste-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .teste-btn {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      text-align: left;
-      cursor: pointer;
-      transition: border-color 0.15s;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 12px;
+      text-align: left; cursor: pointer; transition: border-color 0.15s;
     }
-    .teste-btn:hover { border-color: var(--purple); }
-    .teste-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--purple);
-      margin-bottom: 4px;
-    }
-    .teste-info {
-      font-size: 11px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-    .teste-link {
-      font-size: 11px;
-      color: var(--purple);
-      margin-top: 4px;
-    }
+    .teste-btn:hover { border-color: var(--blue); }
+    .teste-label { font-size: 12px; font-weight: 600; color: var(--blue); margin-bottom: 3px; }
+    .teste-info { font-size: 11px; color: var(--muted); line-height: 1.5; }
+    .teste-link { font-size: 11px; color: var(--blue); margin-top: 3px; }
 
-    /* Card login */
     .card-login {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 12px; padding: 28px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
-    .card-title {
-      font-size: 13px;
-      color: var(--muted);
-      text-align: center;
-      margin-bottom: 16px;
-    }
+    .card-title { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 18px; }
 
-    /* Tabs */
-    .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 22px; }
     .tab {
-      padding: 12px 8px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--white);
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 400;
-      font-family: var(--font);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: all 0.15s;
+      padding: 10px 8px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--white); color: var(--muted);
+      font-size: 13px; font-weight: 400; font-family: var(--font);
+      display: flex; flex-direction: column; align-items: center;
+      gap: 5px; cursor: pointer; transition: all 0.15s;
     }
-    .tab.active {
-      border: 2px solid var(--purple);
-      background: var(--bg);
-      color: var(--purple);
-      font-weight: 600;
-    }
-    .tab-icon { font-size: 20px; }
+    .tab.active { border-color: var(--blue); background: var(--blue-light); color: var(--blue); font-weight: 600; }
+    .tab-icon { font-size: 18px; }
 
-    /* Form */
     .field { margin-bottom: 14px; }
-    .field label {
-      display: block;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
+    .field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
     .field input {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      font-size: 14px;
-      font-family: var(--font);
-      color: var(--text);
-      background: var(--bg);
-      outline: none;
-      transition: border-color 0.15s;
+      width: 100%; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid var(--border); font-size: 14px;
+      font-family: var(--font); color: var(--text);
+      background: var(--white); outline: none; transition: border-color 0.15s;
     }
-    .field input:focus { border-color: var(--purple); }
+    .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
 
     .btn-login {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      background: linear-gradient(135deg, #6B21A8, #EC1E8C);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      font-family: var(--font);
-      cursor: pointer;
-      margin-top: 6px;
-      transition: opacity 0.15s;
+      width: 100%; padding: 11px; border-radius: 8px; border: none;
+      background: var(--blue); color: #fff;
+      box-shadow: 0 1px 3px rgba(37,99,235,0.3);
+      font-size: 14px; font-weight: 600; font-family: var(--font);
+      cursor: pointer; margin-top: 6px; transition: background 0.15s;
     }
-    .btn-login:hover { opacity: 0.9; }
+    .btn-login:hover { background: var(--blue-dark); }
     .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
 
     .erro {
-      background: #FEF2F2;
-      border: 1px solid #FECACA;
-      color: var(--danger);
-      font-size: 13px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      margin-top: 12px;
-      display: none;
+      background: #FEF2F2; border: 1px solid #FECACA;
+      color: var(--danger); font-size: 13px;
+      padding: 10px 12px; border-radius: 8px;
+      margin-top: 12px; display: none;
     }
 
-    .footer-links {
-      text-align: center;
-      margin-top: 16px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .footer-links a { color: var(--purple); font-weight: 600; text-decoration: none; }
+    .footer-links { text-align: center; margin-top: 16px; font-size: 13px; color: var(--muted); }
+    .footer-links a { color: var(--blue); font-weight: 600; text-decoration: none; }
 
-    .suporte {
-      text-align: center;
-      margin-top: 12px;
-      font-size: 12px;
-      color: var(--muted);
+    .suporte { text-align: center; margin-top: 10px; font-size: 12px; color: var(--muted); }
+    .suporte a { color: var(--blue); font-weight: 500; text-decoration: none; }
+
+    .btn-conhecer {
+      display: block; width: 100%; text-align: center;
+      margin-top: 12px; padding: 10px 20px; border-radius: 8px;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); font-size: 13px; font-weight: 500;
+      text-decoration: none; transition: border-color 0.15s;
     }
-    .suporte a { color: var(--pink); font-weight: 500; text-decoration: none; }
+    .btn-conhecer:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ── Chatbot ── */
+    #chat-fab {
+      position: fixed; bottom: 24px; right: 24px; z-index: 1000;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--blue); color: #fff; border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 4px 16px rgba(37,99,235,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #chat-fab:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(37,99,235,0.5); }
+    #chat-window {
+      position: fixed; bottom: 88px; right: 24px; z-index: 999;
+      width: 340px; height: 480px;
+      background: #fff; border: 1px solid #E5E7EB;
+      border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      display: none; flex-direction: column; overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+    #chat-window.open { display: flex; animation: chatSlide 0.2s ease; }
+    @keyframes chatSlide {
+      from { opacity:0; transform: translateY(14px) scale(0.97); }
+      to   { opacity:1; transform: translateY(0) scale(1); }
+    }
+    #chat-head { display:flex; align-items:center; gap:10px; padding:14px 16px; background:var(--blue); flex-shrink:0; }
+    #chat-av { width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; color:#fff; flex-shrink:0; }
+    .chat-head-nome { font-size:13px; font-weight:600; color:#fff; }
+    .chat-head-sub  { font-size:11px; color:rgba(255,255,255,0.75); }
+    #chat-x { margin-left:auto; background:none; border:none; color:rgba(255,255,255,0.8); cursor:pointer; font-size:17px; line-height:1; padding:2px; }
+    #chat-x:hover { color:#fff; }
+    #chat-body { flex:1; overflow-y:auto; padding:14px 12px; display:flex; flex-direction:column; gap:10px; }
+    #chat-body::-webkit-scrollbar { width:4px; }
+    #chat-body::-webkit-scrollbar-thumb { background:#E5E7EB; border-radius:2px; }
+    .cmsg { display:flex; max-width:88%; }
+    .cmsg.bot  { align-self:flex-start; }
+    .cmsg.user { align-self:flex-end; flex-direction:row-reverse; }
+    .cbubble { padding:9px 13px; border-radius:12px; font-size:13px; line-height:1.55; }
+    .cmsg.bot  .cbubble { background:#F3F4F6; color:#111827; border-bottom-left-radius:3px; }
+    .cmsg.user .cbubble { background:var(--blue); color:#fff; border-bottom-right-radius:3px; }
+    .ctopics { display:flex; flex-wrap:wrap; gap:6px; margin-top:2px; }
+    .ctbtn { padding:5px 11px; border-radius:20px; border:1px solid var(--blue); background:#EFF6FF; color:var(--blue); font-size:12px; font-weight:500; cursor:pointer; transition:background 0.15s,color 0.15s; font-family:'Inter',sans-serif; }
+    .ctbtn:hover { background:var(--blue); color:#fff; }
+    #chat-foot { display:flex; gap:8px; padding:10px 12px; border-top:1px solid #E5E7EB; flex-shrink:0; }
+    #chat-input { flex:1; padding:9px 12px; border-radius:8px; border:1px solid #E5E7EB; font-size:13px; font-family:'Inter',sans-serif; outline:none; color:#111827; background:#fff; transition:border-color 0.15s; }
+    #chat-input:focus { border-color:var(--blue); }
+    #chat-send { width:36px; height:36px; border-radius:8px; background:var(--blue); color:#fff; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:background 0.15s; }
+    #chat-send:hover { background:var(--blue-dark,#1D4ED8); }
   </style>
 </head>
 <body>
   <div class="wrap">
 
-    <!-- Logo -->
     <div class="logo-area">
       <div class="logo-icon">
         <svg viewBox="0 0 28 28" fill="none">
-          <path d="M14 4L4 22h20L14 4z" fill="white" opacity="0.9"/>
-          <circle cx="14" cy="20" r="2.5" fill="white" opacity="0.6"/>
+          <path d="M17 8A9 9 0 1 0 17 20" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <rect x="7" y="18" width="3" height="5" rx="0.8" fill="white" opacity="0.55"/>
+          <rect x="11" y="14" width="3" height="9" rx="0.8" fill="white" opacity="0.78"/>
+          <rect x="15" y="10" width="2.5" height="13" rx="0.8" fill="white"/>
+          <path d="M17 9.5L22 6L21.5 10" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <div class="logo-name">ElaConta</div>
-      <div class="logo-sub">Contabilidade inteligente</div>
+      <div class="logo-name">Nexus Contabilidade</div>
+      <div class="logo-sub">Gestão contábil inteligente</div>
     </div>
 
-    <!-- Credenciais de teste -->
-    <div class="card-teste">
-      <div class="card-teste-title">Credenciais de teste</div>
-      <div class="teste-grid">
-        <button class="teste-btn" onclick="preencher('contadora@elaconta.com.br','123456','contador')">
-          <div class="teste-label">Contadora</div>
-          <div class="teste-info">contadora@elaconta.com.br<br>senha: 123456</div>
-          <div class="teste-link">Clique para preencher →</div>
-        </button>
-        <button class="teste-btn" onclick="preencher('cliente@mercadosilva.com.br','123456','cliente')">
-          <div class="teste-label">Cliente</div>
-          <div class="teste-info">cliente@mercadosilva.com.br<br>senha: 123456</div>
-          <div class="teste-link">Clique para preencher →</div>
-        </button>
-      </div>
-    </div>
-
-    <!-- Card de login -->
     <div class="card-login">
       <div class="card-title">Como você vai entrar?</div>
 
       <div class="tabs">
         <button class="tab active" id="tab-cliente" onclick="setTipo('cliente')">
-          <span class="tab-icon">👤</span>
+          <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
           Sou cliente
         </button>
         <button class="tab" id="tab-contador" onclick="setTipo('contador')">
-          <span class="tab-icon">💻</span>
+          <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
           Sou contadora
         </button>
       </div>
@@ -289,21 +225,10 @@
       <div class="footer-links" style="margin-top:8px">
         <a href="/recuperar-senha" style="color:var(--muted);font-weight:400">Esqueci minha senha</a>
       </div>
-     <div class="suporte">
-  Suporte técnico: <a href="https://wa.me/5561982955839" style="color:var(--pink);font-weight:500">WhatsApp</a>
-</div>
-
-<div style="text-align:center;margin-top:12px">
-  <a href="/conhecer" style="
-    display:inline-block;
-    padding:10px 20px;
-    border-radius:10px;
-    background:linear-gradient(135deg,#6B21A8,#EC1E8C);
-    color:#fff;font-size:13px;font-weight:600;
-    text-decoration:none;width:100%;box-sizing:border-box">
-    ✨ Conheça nosso trabalho
-  </a>
-</div>
+      <div class="suporte">
+        Suporte: <a href="https://wa.me/5500000000000">WhatsApp</a>
+      </div>
+      <a href="/conhecer" class="btn-conhecer">Conhecer o sistema</a>
     </div>
 
   </div>
@@ -357,5 +282,52 @@
       }
     }
   </script>
+
+<!-- ── Chatbot ── -->
+<button id="chat-fab" onclick="chatToggle()" title="Tire suas dúvidas">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+</button>
+<div id="chat-window">
+  <div id="chat-head">
+    <div id="chat-av">N</div>
+    <div id="chat-head-info">
+      <div class="chat-head-nome">Assistente Nexus</div>
+      <div class="chat-head-sub">Tire suas dúvidas contábeis</div>
+    </div>
+    <button id="chat-x" onclick="chatToggle()">✕</button>
+  </div>
+  <div id="chat-body"></div>
+  <div id="chat-foot">
+    <input id="chat-input" type="text" placeholder="Digite sua dúvida..." onkeydown="if(event.key==='Enter')chatEnviar()">
+    <button id="chat-send" onclick="chatEnviar()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
+</div>
+<script>
+const CFAQ = [
+  { k:['mei','microempreendedor','micro empreendedor'], r:'O <b>MEI</b> pode faturar até <b>R$ 81.000/ano</b> (R$ 6.750/mês).<br><br>O DAS é pago todo <b>dia 20</b>:<br>• Comércio/Indústria: R$ 71,60<br>• Serviços: R$ 75,60<br><br>Benefícios: CNPJ, nota fiscal, aposentadoria pelo INSS.' },
+  { k:['das','guia mei','boleto mei'], r:'O <b>DAS</b> é o imposto mensal do MEI.<br><br><b>Vencimento:</b> todo dia 20.<br><b>Valores 2024:</b><br>• Comércio/Indústria: R$ 71,60<br>• Serviços: R$ 75,60<br>• Comércio + Serviços: R$ 76,60<br><br>Emita pelo portal <b>gov.br/mei</b>' },
+  { k:['imposto renda','irpf','declaracao','declaração','ir '], r:'O <b>IRPF</b> é declarado entre <b>março e maio</b> de cada ano.<br><br>Quem declara:<br>• Rendimentos acima de R$ 30.639,90/ano<br>• Bens acima de R$ 800.000<br>• Operações em bolsa<br><br>Separe: informe de rendimentos, recibos médicos, comprovantes de imóveis.' },
+  { k:['nota fiscal','nfe','nfse','nf-e','nfs-e','emitir nota'], r:'Tipos de nota fiscal:<br><br><b>NF-e:</b> para venda de produtos<br><b>NFS-e:</b> para serviços (portal da prefeitura)<br><br>MEI pode emitir normalmente. Para serviços, acesse o portal da sua prefeitura.' },
+  { k:['abrir empresa','abertura','constituir empresa','cnpj novo','abrir cnpj'], r:'Para abrir uma empresa defina:<br><br><b>1. Tipo:</b> MEI, SLU, LTDA<br><b>2. Regime:</b> Simples Nacional, Lucro Presumido ou Lucro Real<br><b>3. CNAE</b> (atividade principal)<br><br>Documentos: RG, CPF, comprovante de residência e endereço comercial.' },
+  { k:['simples nacional','simples','regime tributario','regime tributário'], r:'O <b>Simples Nacional</b> unifica impostos para empresas com até <b>R$ 4,8 milhões/ano</b>.<br><br>Vantagens:<br>• Pagamento único (DAS)<br>• Alíquotas reduzidas<br>• Menos burocracia' },
+  { k:['prazo','vencimento','calendario','quando pagar','data pagamento'], r:'Principais prazos:<br><br>• <b>DAS MEI:</b> todo dia 20<br>• <b>IRPF:</b> março a maio (anual)<br>• <b>FGTS:</b> até dia 7 do mês seguinte<br>• <b>13º:</b> 1ª parcela até 30/nov, 2ª até 20/dez' },
+  { k:['folha','salario','salário','fgts','inss','holerite','funcionario','funcionário'], r:'Encargos sobre a folha:<br><br>• <b>FGTS:</b> 8% do salário bruto<br>• <b>INSS (empregado):</b> 7,5% a 14%<br>• <b>IRRF:</b> conforme tabela progressiva<br><br><b>13º:</b> 1ª parcela até 30/nov · 2ª até 20/dez' },
+  { k:['balanco','balanço','dre','demonstrativo','resultado'], r:'O <b>Balanço Patrimonial</b> mostra ativos, passivos e patrimônio líquido.<br><br>A <b>DRE</b> mostra receitas, despesas e lucro/prejuízo do período.' },
+  { k:['certidao','certidão','negativa','debito','débito','regularidade'], r:'Principais certidões:<br><br>• <b>CND Federal</b> — Receita Federal<br>• <b>CND Estadual</b> — portal do seu estado<br>• <b>CND Municipal</b> — prefeitura<br>• <b>FGTS</b> — portal da Caixa<br><br>Geralmente válidas por 180 dias.' },
+];
+let chatOpen=false;
+function chatToggle(){chatOpen=!chatOpen;document.getElementById('chat-window').classList.toggle('open',chatOpen);if(chatOpen&&!document.getElementById('chat-body').children.length){chatBot('Olá! Sou o <b>Assistente Nexus</b>. Escolha um tema ou digite sua dúvida:');chatTopics();}}
+function chatTopics(){const body=document.getElementById('chat-body');const w=document.createElement('div');w.className='ctopics';[['MEI','mei'],['Nota Fiscal','nota fiscal'],['Imposto de Renda','irpf'],['Abrir empresa','abrir empresa'],['Prazos','prazo'],['Folha de pagamento','folha'],['Simples Nacional','simples nacional'],['Balanço / DRE','dre'],['Certidões','certidao']].forEach(([l,k])=>{const b=document.createElement('button');b.className='ctbtn';b.textContent=l;b.onclick=()=>{chatUser(l);chatResponder(k);};w.appendChild(b);});body.appendChild(w);body.scrollTop=body.scrollHeight;}
+function chatBot(html){const body=document.getElementById('chat-body');const d=document.createElement('div');d.className='cmsg bot';d.innerHTML=`<div class="cbubble">${html}</div>`;body.appendChild(d);body.scrollTop=body.scrollHeight;}
+function chatUser(txt){const body=document.getElementById('chat-body');const d=document.createElement('div');d.className='cmsg user';d.innerHTML=`<div class="cbubble">${txt}</div>`;body.appendChild(d);body.scrollTop=body.scrollHeight;}
+function chatResponder(texto){const t=texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');const match=CFAQ.find(f=>f.k.some(k=>t.includes(k.normalize('NFD').replace(/[̀-ͯ]/g,''))));setTimeout(()=>{chatBot(match?match.r:'Não encontrei uma resposta para isso. Entre em contato com a contadora para dúvidas específicas!');setTimeout(()=>{chatBot('Posso ajudar com mais alguma coisa?');chatTopics();},350);},380);}
+function chatEnviar(){const inp=document.getElementById('chat-input');const txt=inp.value.trim();if(!txt)return;inp.value='';chatUser(txt);chatResponder(txt);}
+</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-# limiter.py — ElaConta v1.0
+# limiter.py — Nexus v1.0
 # Instância centralizada de rate limiting (slowapi)
 
 from slowapi import Limiter

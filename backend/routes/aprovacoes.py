@@ -1,4 +1,4 @@
-# routes/aprovacoes.py — ElaConta v1.0
+# routes/aprovacoes.py — Nexus v1.0
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session

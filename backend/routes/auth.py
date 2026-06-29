@@ -1,4 +1,4 @@
-# routes/auth.py — ElaConta v1.0
+# routes/auth.py — Nexus v1.0
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session

@@ -1,4 +1,4 @@
-# routes/empresas.py — ElaConta v1.0
+# routes/empresas.py — Nexus v1.0
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session

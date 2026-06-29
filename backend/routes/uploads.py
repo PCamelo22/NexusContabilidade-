@@ -1,4 +1,4 @@
-# routes/uploads.py — ElaConta v1.0
+# routes/uploads.py — Nexus v1.0
 
 import os
 import io
