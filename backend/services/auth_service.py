@@ -75,11 +75,11 @@ def seed(db: Session):
     """Cria contadora e empresa de teste se não existirem."""
 
     # Contadora padrão — flush para obter o ID antes de criar a empresa
-    contador = db.query(Usuario).filter(Usuario.email == "contadora@elaconta.com.br").first()
+    contador = db.query(Usuario).filter(Usuario.email == "contador@nexuscontabilidade.com.br").first()
     if not contador:
         contador = Usuario(
             nome       = "Ana Paula Silva",
-            email      = "contadora@elaconta.com.br",
+            email      = "contador@nexuscontabilidade.com.br",
             senha_hash = hash_senha("123456"),
             tipo       = TipoUsuario.contador,
             aprovado   = True,
