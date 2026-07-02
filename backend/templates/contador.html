@@ -1347,7 +1347,7 @@
     status.style.color = 'var(--muted)'
     status.textContent = 'Consultando BrasilAPI...'
     try {
-      const res  = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`)
+      const res  = await fetch(`/consultas/cnpj/${cnpj}`)
       const data = await res.json()
       if (!res.ok || data.message) {
         status.textContent = 'CNPJ não encontrado.'
@@ -1375,7 +1375,7 @@
     const cep = (cepParam || document.getElementById('emp-cep').value).replace(/\D/g,'')
     if (cep.length !== 8) return
     try {
-      const res  = await fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`)
+      const res  = await fetch(`/consultas/cep/${cep}`)
       const data = await res.json()
       if (!res.ok) return
       document.getElementById('emp-cidade').value   = `${data.city} / ${data.state}`

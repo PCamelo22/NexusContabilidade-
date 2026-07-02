@@ -14,7 +14,7 @@ from slowapi import _rate_limit_exceeded_handler
 from database import engine, SessionLocal, Base, migrar_colunas
 from models import *
 from services.auth_service import seed
-from routes import auth, empresas, financeiro, uploads, cadastro, aprovacoes
+from routes import auth, empresas, financeiro, uploads, cadastro, aprovacoes, consultas
 from config import APP_NOME, APP_VERSAO, ALLOWED_ORIGINS, IS_PRODUCTION
 from limiter import limiter
 
@@ -94,6 +94,7 @@ app.include_router(financeiro.router)
 app.include_router(uploads.router)
 app.include_router(cadastro.router)
 app.include_router(aprovacoes.router)
+app.include_router(consultas.router)
 
 # ── Arquivos estáticos (boletos, comprovantes) ────────────────────────────────
 os.makedirs("uploads/boletos",      exist_ok=True)
