@@ -1349,8 +1349,14 @@
     try {
       const res  = await fetch(`/consultas/cnpj/${cnpj}`)
       const data = await res.json()
-      if (!res.ok || data.message) {
-        status.textContent = 'CNPJ não encontrado.'
+      if (!res.ok) {
+        if (res.status === 504) {
+          status.textContent = 'Timeout — BrasilAPI demorou demais. Tente novamente.'
+        } else if (res.status === 502) {
+          status.textContent = 'Erro de conexão com BrasilAPI. Tente novamente.'
+        } else {
+          status.textContent = data.detail || 'CNPJ não encontrado.'
+        }
         status.style.color = 'var(--danger)'
         return
       }
@@ -1364,8 +1370,8 @@
       }
       status.textContent = '✓ Dados preenchidos automaticamente!'
       status.style.color = 'var(--verde)'
-    } catch {
-      status.textContent = 'Erro ao consultar CNPJ.'
+    } catch (err) {
+      status.textContent = 'Erro ao consultar CNPJ: ' + (err.message || err)
       status.style.color = 'var(--danger)'
     }
   }
