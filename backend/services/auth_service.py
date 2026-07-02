@@ -78,7 +78,7 @@ def seed(db: Session):
     contador = db.query(Usuario).filter(Usuario.email == "contador@nexuscontabilidade.com.br").first()
     if not contador:
         contador = Usuario(
-            nome       = "Ana Paula Silva",
+            nome       = "Nexus",
             email      = "contador@nexuscontabilidade.com.br",
             senha_hash = hash_senha("123456"),
             tipo       = TipoUsuario.contador,

@@ -74,17 +74,6 @@
     }
     .card-title { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 18px; }
 
-    .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 22px; }
-    .tab {
-      padding: 10px 8px; border-radius: 8px; border: 1px solid var(--border);
-      background: var(--white); color: var(--muted);
-      font-size: 13px; font-weight: 400; font-family: var(--font);
-      display: flex; flex-direction: column; align-items: center;
-      gap: 5px; cursor: pointer; transition: all 0.15s;
-    }
-    .tab.active { border-color: var(--blue); background: var(--blue-light); color: var(--blue); font-weight: 600; }
-    .tab-icon { font-size: 18px; }
-
     .field { margin-bottom: 14px; }
     .field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
     .field input {
@@ -193,18 +182,7 @@
     </div>
 
     <div class="card-login">
-      <div class="card-title">Como você vai entrar?</div>
-
-      <div class="tabs">
-        <button class="tab active" id="tab-cliente" onclick="setTipo('cliente')">
-          <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-          Sou cliente
-        </button>
-        <button class="tab" id="tab-contador" onclick="setTipo('contador')">
-          <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
-          Sou contadora
-        </button>
-      </div>
+      <div class="card-title">Acesse sua conta</div>
 
       <div class="field">
         <label>E-mail</label>
@@ -234,20 +212,6 @@
   </div>
 
   <script>
-    let tipoAtivo = 'cliente'
-
-    function setTipo(tipo) {
-      tipoAtivo = tipo
-      document.getElementById('tab-cliente').className  = 'tab' + (tipo === 'cliente'  ? ' active' : '')
-      document.getElementById('tab-contador').className = 'tab' + (tipo === 'contador' ? ' active' : '')
-    }
-
-    function preencher(email, senha, tipo) {
-      document.getElementById('email').value = email
-      document.getElementById('senha').value = senha
-      setTipo(tipo)
-    }
-
     async function entrar() {
       const email = document.getElementById('email').value.trim()
       const senha = document.getElementById('senha').value
