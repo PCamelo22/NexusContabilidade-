@@ -1343,15 +1343,15 @@
       document.getElementById('cnpj-status').textContent = 'CNPJ inválido — deve ter 14 dígitos.'
       return
     }
-    const btn = document.getElementById('btn-cnpj')
-    btn.disabled = true
-    btn.textContent = 'Buscando...'
-    document.getElementById('cnpj-status').textContent = 'Consultando BrasilAPI...'
+    const status = document.getElementById('cnpj-status')
+    status.style.color = 'var(--muted)'
+    status.textContent = 'Consultando BrasilAPI...'
     try {
       const res  = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`)
       const data = await res.json()
       if (!res.ok || data.message) {
-        document.getElementById('cnpj-status').textContent = 'CNPJ não encontrado.'
+        status.textContent = 'CNPJ não encontrado.'
+        status.style.color = 'var(--danger)'
         return
       }
       document.getElementById('emp-razao').value    = data.razao_social || ''
@@ -1362,13 +1362,11 @@
         document.getElementById('emp-cep').value = data.cep
         await buscarCEP(data.cep)
       }
-      document.getElementById('cnpj-status').textContent = 'Dados preenchidos automaticamente!'
-      document.getElementById('cnpj-status').style.color = 'var(--verde)'
+      status.textContent = '✓ Dados preenchidos automaticamente!'
+      status.style.color = 'var(--verde)'
     } catch {
-      document.getElementById('cnpj-status').textContent = 'Erro ao consultar CNPJ.'
-    } finally {
-      btn.disabled = false
-      btn.textContent = 'Buscar'
+      status.textContent = 'Erro ao consultar CNPJ.'
+      status.style.color = 'var(--danger)'
     }
   }
 
