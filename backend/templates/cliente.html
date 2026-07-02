@@ -10,19 +10,19 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --blue: #2563EB;
-      --blue-dark: #1D4ED8;
-      --blue-light: #EFF6FF;
-      --bg: #F9FAFB;
+      --blue: #1e40af;
+      --blue-dark: #1e3a8a;
+      --blue-light: #eff6ff;
+      --bg: #f6f9fc;
       --white: #FFFFFF;
       --border: #E5E7EB;
       --border-light: #F3F4F6;
       --text: #111827;
       --text-2: #374151;
       --muted: #6B7280;
-      --verde: #059669;
-      --amarelo: #D97706;
-      --danger: #DC2626;
+      --verde: #14b8a6;
+      --amarelo: #f59e0b;
+      --danger: #ef476f;
       --font: 'Inter', sans-serif;
       --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
       --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
@@ -80,7 +80,7 @@
       display: flex; align-items: center; gap: 10px; cursor: pointer;
       transition: color 0.15s, background 0.15s;
     }
-    .btn-sair:hover { color: var(--danger); background: #FEF2F2; }
+    .btn-sair:hover { color: var(--danger); background: #fff0f3; }
 
     .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; }
     .header {
@@ -128,10 +128,10 @@
       display: flex; align-items: center; justify-content: center;
     }
     .metric-icon svg { width: 18px; height: 18px; }
-    .metric-card.green  .metric-icon { background: #ECFDF5; color: #059669; }
-    .metric-card.red    .metric-icon { background: #FEF2F2; color: #DC2626; }
-    .metric-card.purple .metric-icon { background: #EFF6FF; color: #2563EB; }
-    .metric-card.yellow .metric-icon { background: #FFFBEB; color: #D97706; }
+    .metric-card.green  .metric-icon { background: #f0fdfa; color: #14b8a6; }
+    .metric-card.red    .metric-icon { background: #fff0f3; color: #ef476f; }
+    .metric-card.purple .metric-icon { background: #eff6ff; color: #1e40af; }
+    .metric-card.yellow .metric-icon { background: #fffbeb; color: #f59e0b; }
     .metric-value { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
     .metric-sub   { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
@@ -164,9 +164,9 @@
       font-size: 11px; font-weight: 600;
       padding: 3px 8px; border-radius: 6px;
     }
-    .tag-verde  { background: #ECFDF5; color: #065F46; }
-    .tag-red    { background: #FEF2F2; color: #991B1B; }
-    .tag-yellow { background: #FFFBEB; color: #92400E; }
+    .tag-verde  { background: #f0fdfa; color: #0f766e; }
+    .tag-red    { background: #fff0f3; color: #be185d; }
+    .tag-yellow { background: #fffbeb; color: #92400E; }
     .tag-blue { background: var(--blue-light); color: var(--blue); }
 
     .btn {
@@ -199,8 +199,8 @@
       padding: 8px 12px; border-radius: 6px;
       margin-bottom: 4px;
     }
-    .dre-header.receita { background: #ECFDF5; color: #065F46; }
-    .dre-header.despesa { background: #FEF2F2; color: #991B1B; }
+    .dre-header.receita { background: #f0fdfa; color: #0f766e; }
+    .dre-header.despesa { background: #fff0f3; color: #be185d; }
     .dre-row {
       display: flex; justify-content: space-between;
       padding: 8px 12px 8px 24px; font-size: 13px;
@@ -408,7 +408,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="theme-color" content="#2563EB" />
+  <meta name="theme-color" content="#1e40af" />
 </head>
 <body>
 
@@ -685,14 +685,14 @@
         x: data.evolucao.map(e=>e.mes),
         y: data.evolucao.map(e=>e.receitas),
         name: 'Receitas', type: 'bar',
-        marker: { color: 'rgba(16,185,129,0.82)', line: { color: '#059669', width: 1 }, cornerradius: 5 },
+        marker: { color: 'rgba(20,184,166,0.85)', line: { color: '#0d9488', width: 1 }, cornerradius: 5 },
         hovertemplate: '<b>%{x}</b><br>Receitas: R$ %{y:,.2f}<extra></extra>',
       },
       {
         x: data.evolucao.map(e=>e.mes),
         y: data.evolucao.map(e=>e.despesas),
         name: 'Despesas', type: 'bar',
-        marker: { color: 'rgba(239,68,68,0.78)', line: { color: '#DC2626', width: 1 }, cornerradius: 5 },
+        marker: { color: 'rgba(239,71,111,0.82)', line: { color: '#be185d', width: 1 }, cornerradius: 5 },
         hovertemplate: '<b>%{x}</b><br>Despesas: R$ %{y:,.2f}<extra></extra>',
       },
     ], {
@@ -709,7 +709,7 @@
       values: [data.receitas || 0.1, data.despesas || 0.1],
       labels: ['Receitas', 'Despesas'],
       type: 'pie', hole: 0.62,
-      marker: { colors: ['#10B981', '#EF4444'], line: { color: '#ffffff', width: 2 } },
+      marker: { colors: ['#14b8a6', '#ef476f'], line: { color: '#ffffff', width: 2 } },
       textinfo: 'none',
       hovertemplate: '<b>%{label}</b><br>R$ %{value:,.2f}<br>%{percent}<extra></extra>',
       pull: [0.03, 0.03],
